@@ -1,10 +1,8 @@
 package com.shr4pnel.clients.packing;
 
-
 import com.shr4pnel.middleware.MiddleFactory;
 import com.shr4pnel.middleware.Names;
 import com.shr4pnel.middleware.RemoteMiddleFactory;
-
 import javax.swing.*;
 
 /**
@@ -16,17 +14,19 @@ import javax.swing.*;
  */
 public class PackingClient {
     public static void main(String[] args) {
-        String stockURL = args.length < 1     // URL of stock RW
-                ? Names.STOCK_RW      //  default  location
-                : args[0];            //  supplied location
-        String orderURL = args.length < 2     // URL of order
-                ? Names.ORDER         //  default  location
-                : args[1];            //  supplied location
+        String stockURL =
+                args.length < 1 // URL of stock RW
+                        ? Names.STOCK_RW //  default  location
+                        : args[0]; //  supplied location
+        String orderURL =
+                args.length < 2 // URL of order
+                        ? Names.ORDER //  default  location
+                        : args[1]; //  supplied location
 
         RemoteMiddleFactory mrf = new RemoteMiddleFactory();
         mrf.setStockRWInfo(stockURL);
-        mrf.setOrderInfo(orderURL);        //
-        displayGUI(mrf);                       // Create GUI
+        mrf.setOrderInfo(orderURL); //
+        displayGUI(mrf); // Create GUI
     }
 
     public static void displayGUI(MiddleFactory mf) {
@@ -40,8 +40,7 @@ public class PackingClient {
         PackingController cont = new PackingController(model, view);
         view.setController(cont);
 
-        model.addObserver(view);       // Add observer to the model
-        window.setVisible(true);         // Display Screen
+        model.addObserver(view); // Add observer to the model
+        window.setVisible(true); // Display Screen
     }
 }
-

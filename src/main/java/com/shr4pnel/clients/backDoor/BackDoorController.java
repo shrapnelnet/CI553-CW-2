@@ -1,10 +1,6 @@
 package com.shr4pnel.clients.backDoor;
 
-
-/**
- * The BackDoor Controller
- */
-
+/** The BackDoor Controller */
 public class BackDoorController {
     private BackDoorModel model = null;
     private BackDoorView view = null;
@@ -13,7 +9,7 @@ public class BackDoorController {
      * Constructor
      *
      * @param model The model
-     * @param view  The view from which the interaction came
+     * @param view The view from which the interaction came
      */
     public BackDoorController(BackDoorModel model, BackDoorView view) {
         this.view = view;
@@ -32,20 +28,15 @@ public class BackDoorController {
     /**
      * RStock interaction from view
      *
-     * @param pn       The product number to be re-stocked
+     * @param pn The product number to be re-stocked
      * @param quantity The quantity to be re-stocked
      */
     public void doRStock(String pn, String quantity) {
         model.doRStock(pn, quantity);
     }
 
-    /**
-     * Clear interaction from view
-     */
+    /** Clear interaction from view */
     public void doClear() {
         model.doClear();
     }
-
-
 }
-

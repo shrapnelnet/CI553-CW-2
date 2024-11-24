@@ -1,7 +1,6 @@
 package com.shr4pnel.middleware;
 
 import com.shr4pnel.catalogue.Basket;
-
 import java.util.List;
 import java.util.Map;
 
@@ -11,19 +10,18 @@ import java.util.Map;
  * @author Mike Smith University of Brighton
  * @version 2.0
  */
-
 public interface OrderProcessing {
     // Used by
-    void newOrder(Basket bought)              // Cashier
+    void newOrder(Basket bought) // Cashier
             throws OrderException;
 
-    int uniqueNumber()                       // Cashier
+    int uniqueNumber() // Cashier
             throws OrderException;
 
-    Basket getOrderToPack()                   // Packer
+    Basket getOrderToPack() // Packer
             throws OrderException;
 
-    boolean informOrderPacked(int orderNum)   // Packer
+    boolean informOrderPacked(int orderNum) // Packer
             throws OrderException;
 
     // not being used in this version

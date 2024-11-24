@@ -8,13 +8,10 @@ import java.sql.DriverManager;
  * @author Mike Smith University of Brighton
  * @version 2.0
  */
-
 class DerbyAccess extends DBAccess {
     private static final String URLdb = "jdbc:derby:derby";
 
-    /**
-     * Load the Apache Derby database driver
-     */
+    /** Load the Apache Derby database driver */
     public void loadDriver() throws Exception {
         DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
     }
@@ -28,4 +25,3 @@ class DerbyAccess extends DBAccess {
         return URLdb;
     }
 }
-

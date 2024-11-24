@@ -1,9 +1,6 @@
 package com.shr4pnel.clients.customer;
 
-/**
- * The Customer Controller
- */
-
+/** The Customer Controller */
 public class CustomerController {
     private CustomerModel model = null;
     private CustomerView view = null;
@@ -12,7 +9,7 @@ public class CustomerController {
      * Constructor
      *
      * @param model The model
-     * @param view  The view from which the interaction came
+     * @param view The view from which the interaction came
      */
     public CustomerController(CustomerModel model, CustomerView view) {
         this.view = view;
@@ -28,13 +25,8 @@ public class CustomerController {
         model.doCheck(pn);
     }
 
-    /**
-     * Clear interaction from view
-     */
+    /** Clear interaction from view */
     public void doClear() {
         model.doClear();
     }
-
-
 }
-

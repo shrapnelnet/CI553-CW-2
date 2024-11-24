@@ -7,20 +7,16 @@ import java.util.Formatter;
 import java.util.Locale;
 
 /**
- * A collection of products,
- * used to record the products that are to be wished to be purchased.
+ * A collection of products, used to record the products that are to be wished to be purchased.
  *
  * @author Mike Smith University of Brighton
  * @version 2.2
  */
 public class Basket extends ArrayList<Product> implements Serializable {
     private static final long serialVersionUID = 1;
-    private int theOrderNum = 0;          // Order number
+    private int theOrderNum = 0; // Order number
 
-    /**
-     * Constructor for a basket which is
-     * used to represent a customer order/ wish list
-     */
+    /** Constructor for a basket which is used to represent a customer order/ wish list */
     public Basket() {
         theOrderNum = 0;
     }
@@ -35,8 +31,7 @@ public class Basket extends ArrayList<Product> implements Serializable {
     }
 
     /**
-     * Set the customers unique order number
-     * Valid order Numbers 1 .. N
+     * Set the customers unique order number Valid order Numbers 1 .. N
      *
      * @param anOrderNum A unique order number
      */
@@ -45,9 +40,8 @@ public class Basket extends ArrayList<Product> implements Serializable {
     }
 
     /**
-     * Add a product to the Basket.
-     * Product is appended to the end of the existing products
-     * in the basket.
+     * Add a product to the Basket. Product is appended to the end of the existing products in the
+     * basket.
      *
      * @param pr A product to be added to the basket
      * @return true if successfully adds the product
@@ -55,7 +49,7 @@ public class Basket extends ArrayList<Product> implements Serializable {
     // Will be in the Java doc for Basket
     @Override
     public boolean add(Product pr) {
-        return super.add(pr);     // Call add in ArrayList
+        return super.add(pr); // Call add in ArrayList
     }
 
     /**
@@ -69,8 +63,7 @@ public class Basket extends ArrayList<Product> implements Serializable {
         Formatter fr = new Formatter(sb, uk);
         String csign = (Currency.getInstance(uk)).getSymbol();
         double total = 0.00;
-        if (theOrderNum != 0)
-            fr.format("Order number: %03d\n", theOrderNum);
+        if (theOrderNum != 0) fr.format("Order number: %03d\n", theOrderNum);
 
         if (this.size() > 0) {
             for (Product pr : this) {

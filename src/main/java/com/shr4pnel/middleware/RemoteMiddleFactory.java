@@ -4,10 +4,7 @@
  */
 package com.shr4pnel.middleware;
 
-/**
- * Provide access to middle tier components.
- */
-
+/** Provide access to middle tier components. */
 public class RemoteMiddleFactory implements MiddleFactory {
     private String theStockR_URL = "";
     private String theStockRW_URL = "";
@@ -25,29 +22,18 @@ public class RemoteMiddleFactory implements MiddleFactory {
         theOrder_URL = url;
     }
 
-    /**
-     * Return an object to access the database for read only access.
-     * Access is via RMI
-     */
-
+    /** Return an object to access the database for read only access. Access is via RMI */
     public StockReader makeStockReader() throws StockException {
         return new F_StockR(theStockR_URL);
     }
 
-    /**
-     * Return an object to access the database for read/write access.
-     * Access is via RMI
-     */
+    /** Return an object to access the database for read/write access. Access is via RMI */
     public StockReadWriter makeStockReadWriter() throws StockException {
         return new F_StockRW(theStockRW_URL);
     }
 
-    /**
-     * Return an object to access the order processing system.
-     * Access is via RMI
-     */
+    /** Return an object to access the order processing system. Access is via RMI */
     public OrderProcessing makeOrderProcessing() throws OrderException {
         return new F_Order(theOrder_URL);
     }
 }
-

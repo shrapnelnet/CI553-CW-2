@@ -3,21 +3,19 @@ package com.shr4pnel.clients.customer;
 import com.shr4pnel.middleware.MiddleFactory;
 import com.shr4pnel.middleware.Names;
 import com.shr4pnel.middleware.RemoteMiddleFactory;
-
 import javax.swing.*;
 
-/**
- * The standalone Customer Client
- */
+/** The standalone Customer Client */
 public class CustomerClient {
     public static void main(String[] args) {
-        String stockURL = args.length < 1         // URL of stock R
-                ? Names.STOCK_R           //  default  location
-                : args[0];                //  supplied location
+        String stockURL =
+                args.length < 1 // URL of stock R
+                        ? Names.STOCK_R //  default  location
+                        : args[0]; //  supplied location
 
         RemoteMiddleFactory mrf = new RemoteMiddleFactory();
         mrf.setStockRInfo(stockURL);
-        displayGUI(mrf);                          // Create GUI
+        displayGUI(mrf); // Create GUI
     }
 
     private static void displayGUI(MiddleFactory mf) {
@@ -30,7 +28,7 @@ public class CustomerClient {
         CustomerController cont = new CustomerController(model, view);
         view.setController(cont);
 
-        model.addObserver(view);       // Add observer to the model
-        window.setVisible(true);         // Display Scree
+        model.addObserver(view); // Add observer to the model
+        window.setVisible(true); // Display Scree
     }
 }

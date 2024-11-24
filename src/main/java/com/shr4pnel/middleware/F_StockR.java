@@ -1,28 +1,21 @@
 package com.shr4pnel.middleware;
 
 /**
- * Facade for read access to the stock list.
- * The actual implementation of this is held on the middle tier.
- * The actual stock list is held in a relational DataBase on the
- * third tier.
+ * Facade for read access to the stock list. The actual implementation of this is held on the middle
+ * tier. The actual stock list is held in a relational DataBase on the third tier.
  *
  * @author Mike Smith University of Brighton
  * @version 2.0
  */
-
 import com.shr4pnel.catalogue.Product;
 import com.shr4pnel.remote.RemoteStockR_I;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import javax.swing.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.*;
-import java.rmi.Naming;
-import java.rmi.RemoteException;
-
-/**
- * Setup connection to the middle tier
- */
-
+/** Setup connection to the middle tier */
 public class F_StockR implements StockReader {
     private static final Logger F_StockRLogger = LogManager.getLogger(F_StockR.class);
     private RemoteStockR_I aR_StockR = null;
@@ -34,15 +27,14 @@ public class F_StockR implements StockReader {
     }
 
     private void connect() throws StockException {
-        try                                             // Setup
-        {                                               //  connection
-            aR_StockR =                                   //  Connect to
-                    (RemoteStockR_I) Naming.lookup(theStockURL);// Stub returned
-        } catch (Exception e)                           // Failure to
-        {                                               //  attach to the
+        try // Setup
+        { //  connection
+            aR_StockR = //  Connect to
+                    (RemoteStockR_I) Naming.lookup(theStockURL); // Stub returned
+        } catch (Exception e) // Failure to
+        { //  attach to the
             aR_StockR = null;
-            throw new StockException("Com: " + e.getMessage());  //  object
-
+            throw new StockException("Com: " + e.getMessage()); //  object
         }
     }
 
@@ -51,9 +43,7 @@ public class F_StockR implements StockReader {
      *
      * @return true if exists otherwise false
      */
-
-    public synchronized boolean exists(String number)
-            throws StockException {
+    public synchronized boolean exists(String number) throws StockException {
         F_StockRLogger.trace("F_StockR:exists()");
         try {
             if (aR_StockR == null) connect();
@@ -69,9 +59,7 @@ public class F_StockR implements StockReader {
      *
      * @return StockNumber, Description, Price, Quantity
      */
-
-    public synchronized Product getDetails(String number)
-            throws StockException {
+    public synchronized Product getDetails(String number) throws StockException {
         F_StockRLogger.trace("F_StockR:getDetails()");
         try {
             if (aR_StockR == null) connect();
@@ -82,9 +70,7 @@ public class F_StockR implements StockReader {
         }
     }
 
-
-    public synchronized ImageIcon getImage(String number)
-            throws StockException {
+    public synchronized ImageIcon getImage(String number) throws StockException {
         F_StockRLogger.trace("F_StockR:getImage()");
         try {
             if (aR_StockR == null) connect();
@@ -94,5 +80,4 @@ public class F_StockR implements StockReader {
             throw new StockException("Net: " + e.getMessage());
         }
     }
-
 }

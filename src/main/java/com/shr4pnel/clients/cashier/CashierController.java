@@ -1,10 +1,6 @@
 package com.shr4pnel.clients.cashier;
 
-
-/**
- * The Cashier Controller
- */
-
+/** The Cashier Controller */
 public class CashierController {
     private CashierModel model = null;
     private CashierView view = null;
@@ -13,7 +9,7 @@ public class CashierController {
      * Constructor
      *
      * @param model The model
-     * @param view  The view from which the interaction came
+     * @param view The view from which the interaction came
      */
     public CashierController(CashierModel model, CashierView view) {
         this.view = view;
@@ -29,16 +25,12 @@ public class CashierController {
         model.doCheck(pn);
     }
 
-    /**
-     * Buy interaction from view
-     */
+    /** Buy interaction from view */
     public void doBuy() {
         model.doBuy();
     }
 
-    /**
-     * Bought interaction from view
-     */
+    /** Bought interaction from view */
     public void doBought() {
         model.doBought();
     }
