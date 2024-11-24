@@ -12,7 +12,6 @@ import com.shr4pnel.clients.customer.CustomerView;
 import com.shr4pnel.clients.packing.PackingController;
 import com.shr4pnel.clients.packing.PackingModel;
 import com.shr4pnel.clients.packing.PackingView;
-import com.shr4pnel.logging.Logger;
 import com.shr4pnel.middleware.LocalMiddleFactory;
 import com.shr4pnel.middleware.MiddleFactory;
 
@@ -37,7 +36,6 @@ class Main {
      * Starts the system (Non-distributed)
      */
     public void begin() {
-        Logger.enable(); /* Lots of debug info */
         MiddleFactory mlf = new LocalMiddleFactory();  // Direct access
         startCustomerGUI_MVC(mlf);
         startCashierGUI_MVC(mlf);

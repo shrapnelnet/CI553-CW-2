@@ -2,9 +2,10 @@ package com.shr4pnel.orders;
 
 import com.shr4pnel.catalogue.Basket;
 import com.shr4pnel.catalogue.Product;
-import com.shr4pnel.logging.Logger;
 import com.shr4pnel.middleware.OrderException;
 import com.shr4pnel.middleware.OrderProcessing;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  */
 
 public class Order implements OrderProcessing {
+    private static final Logger orderLogger = LogManager.getLogger(Order.class);
     private static int theNextNumber = 1;          // Start at order 1
 
     // Active orders in the Catshop system
@@ -64,10 +66,10 @@ public class Order implements OrderProcessing {
      */
     public synchronized void newOrder(Basket bought)
             throws OrderException {
-        Logger.trace("DEBUG: New order");
+        orderLogger.trace("Order received");
         folders.add(new Folder(bought));
         for (Folder bws : folders) {
-            Logger.trace("Order: " + asString(bws.getBasket()));
+            orderLogger.trace("Order: {}", asString(bws.getBasket()));
         }
     }
 
@@ -76,9 +78,8 @@ public class Order implements OrderProcessing {
      *
      * @return An order to pack or null if no order
      */
-    public synchronized Basket getOrderToPack()
-            throws OrderException {
-        Logger.trace("DEBUG: Get order to pack");
+    public synchronized Basket getOrderToPack() throws OrderException {
+        orderLogger.debug("Order packing");
         Basket foundWaiting = null;
         for (Folder bws : folders) {
             if (bws.getState() == State.Waiting) {
@@ -100,11 +101,10 @@ public class Order implements OrderProcessing {
      */
     public synchronized boolean informOrderPacked(int orderNum)
             throws OrderException {
-        Logger.trace("DEBUG: Order packed [%d]", orderNum);
-        for (int i = 0; i < folders.size(); i++) {
-            if (folders.get(i).getBasket().getOrderNum() == orderNum &&
-                    folders.get(i).getState() == State.BeingPacked) {
-                folders.get(i).newState(State.ToBeCollected);
+        orderLogger.debug("Order #{} packed", orderNum);
+        for (Folder folder : folders) {
+            if (folder.getBasket().getOrderNum() == orderNum && folder.getState() == State.BeingPacked) {
+                folder.newState(State.ToBeCollected);
                 return true;
             }
         }
@@ -119,7 +119,7 @@ public class Order implements OrderProcessing {
      */
     public synchronized boolean informOrderCollected(int orderNum)
             throws OrderException {
-        Logger.trace("DEBUG: Order collected [%d]", orderNum);
+        orderLogger.debug("Order #{} collected", orderNum);
         for (int i = 0; i < folders.size(); i++) {
             if (folders.get(i).getBasket().getOrderNum() == orderNum &&
                     folders.get(i).getState() == State.ToBeCollected) {
@@ -147,6 +147,7 @@ public class Order implements OrderProcessing {
     public synchronized Map<String, List<Integer>> getOrderState()
             throws OrderException {
         //DEBUG.trace( "DEBUG: get state of order system" );
+        orderLogger.debug("Fetching state of order");
         Map<String, List<Integer>> res = new HashMap<>();
 
         res.put("Waiting", orderNums(State.Waiting));

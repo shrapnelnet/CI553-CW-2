@@ -11,8 +11,9 @@
 package com.shr4pnel.middleware;
 
 import com.shr4pnel.catalogue.Product;
-import com.shr4pnel.logging.Logger;
 import com.shr4pnel.remote.RemoteStockRW_I;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -21,8 +22,8 @@ import java.rmi.RemoteException;
  * Setup connection to the middle tier
  */
 
-public class F_StockRW extends F_StockR
-        implements StockReadWriter {
+public class F_StockRW extends F_StockR implements StockReadWriter {
+    private static final Logger F_StockRWLogger = LogManager.getLogger(F_StockRW.class);
     private RemoteStockRW_I aR_StockRW = null;
     private String theStockURL = null;
 
@@ -54,7 +55,7 @@ public class F_StockRW extends F_StockR
 
     public boolean buyStock(String number, int amount)
             throws StockException {
-        Logger.trace("F_StockRW:buyStock()");
+        F_StockRWLogger.trace("F_StockRW:buyStock()");
         try {
             if (aR_StockRW == null) connect();
             return aR_StockRW.buyStock(number, amount);
@@ -73,7 +74,7 @@ public class F_StockRW extends F_StockR
 
     public void addStock(String number, int amount)
             throws StockException {
-        Logger.trace("F_StockRW:addStock()");
+        F_StockRWLogger.trace("F_StockRW:addStock()");
         try {
             if (aR_StockRW == null) connect();
             aR_StockRW.addStock(number, amount);
@@ -92,7 +93,7 @@ public class F_StockRW extends F_StockR
 
     public void modifyStock(Product detail)
             throws StockException {
-        Logger.trace("F_StockRW:modifyStock()");
+        F_StockRWLogger.trace("F_StockRW:modifyStock()");
         try {
             if (aR_StockRW == null) connect();
             aR_StockRW.modifyStock(detail);

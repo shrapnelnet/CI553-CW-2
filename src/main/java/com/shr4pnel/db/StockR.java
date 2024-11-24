@@ -1,5 +1,3 @@
-package com.shr4pnel.db;
-
 /**
  * Implements Read access to the stock list
  * The stock list is held in a relational DataBase
@@ -8,10 +6,13 @@ package com.shr4pnel.db;
  * @version 2.0
  */
 
+package com.shr4pnel.db;
+
 import com.shr4pnel.catalogue.Product;
-import com.shr4pnel.logging.Logger;
 import com.shr4pnel.middleware.StockException;
 import com.shr4pnel.middleware.StockReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.sql.*;
@@ -27,7 +28,8 @@ import java.sql.*;
  * Implements read only access to the stock database.
  */
 public class StockR implements StockReader {
-    private Connection theCon = null;      // Connection to database
+    private final static Logger StockRLogger = LogManager.getLogger(StockR.class);
+    private Connection conn = null;      // Connection to database
     private Statement theStmt = null;      // Statement object
 
     /**
@@ -41,15 +43,19 @@ public class StockR implements StockReader {
             DBAccess dbDriver = (new DBAccessFactory()).getNewDBAccess();
             dbDriver.loadDriver();
 
-            theCon = DriverManager.getConnection
-                    (dbDriver.urlOfDatabase(),
-                            dbDriver.username(),
-                            dbDriver.password());
+//            conn = DriverManager.getConnection
+//                    (dbDriver.urlOfDatabase(),
+//                            dbDriver.username(),
+//                            dbDriver.password());
+            conn = DriverManager.getConnection(dbDriver.urlOfDatabase());
 
-            theStmt = theCon.createStatement();
-            theCon.setAutoCommit(true);
+
+            theStmt = conn.createStatement();
+            conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new StockException("SQL problem:" + e.getMessage());
+            StockRLogger.error("Error during SQL execution", e);
+            // all this accomplishes is muddling the stacktrace
+            // throw new StockException("SQL problem:" + e.getMessage());
         } catch (Exception e) {
             throw new StockException("Can not load database driver.");
         }
@@ -72,7 +78,7 @@ public class StockR implements StockReader {
      */
 
     protected Connection getConnectionObject() {
-        return theCon;
+        return conn;
     }
 
     /**
@@ -89,8 +95,7 @@ public class StockR implements StockReader {
                             "  where  ProductTable.productNo = '" + pNum + "'"
             );
             boolean res = rs.next();
-            Logger.trace("DB StockR: exists(%s) -> %s",
-                    pNum, (res ? "T" : "F"));
+            StockRLogger.trace("Db StockR: exists({}) -> {}", pNum, res);
             return res;
         } catch (SQLException e) {
             throw new StockException("SQL exists: " + e.getMessage());
@@ -146,8 +151,8 @@ public class StockR implements StockReader {
                 filename = rs.getString("picture");
             rs.close();
         } catch (SQLException e) {
-            Logger.error("getImage()\n%s\n", e.getMessage());
-            throw new StockException("SQL getImage: " + e.getMessage());
+            StockRLogger.fatal("Failed to fetch product image", e);
+            throw new StockException("Failed to fetch product image");
         }
 
         //DEBUG.trace( "DB StockR: getImage -> %s", filename );

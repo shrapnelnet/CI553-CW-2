@@ -2,11 +2,12 @@ package com.shr4pnel.clients.customer;
 
 import com.shr4pnel.catalogue.Basket;
 import com.shr4pnel.catalogue.Product;
-import com.shr4pnel.logging.Logger;
 import com.shr4pnel.middleware.MiddleFactory;
 import com.shr4pnel.middleware.OrderProcessing;
 import com.shr4pnel.middleware.StockException;
 import com.shr4pnel.middleware.StockReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.util.Observable;
@@ -15,6 +16,8 @@ import java.util.Observable;
  * Implements the Model of the customer client
  */
 public class CustomerModel extends Observable {
+    private static final Logger customerModelLogger = LogManager.getLogger(CustomerModel.class);
+
     private final Product theProduct = null;          // Current product
     private Basket theBasket = null;          // Bought items
 
@@ -33,8 +36,7 @@ public class CustomerModel extends Observable {
         {
             theStock = mf.makeStockReader();           // Database access
         } catch (Exception e) {
-            Logger.error("CustomerModel.constructor\n" +
-                    "Database not created?\n%s\n", e.getMessage());
+            customerModelLogger.error("CustomerModel.constructor, Database not created?", e);
         }
         theBasket = makeBasket();                    // Initial Basket
     }
@@ -82,8 +84,7 @@ public class CustomerModel extends Observable {
                         "Unknown product number " + pn;       //  product number
             }
         } catch (StockException e) {
-            Logger.error("CustomerClient.doCheck()\n%s",
-                    e.getMessage());
+            customerModelLogger.error("CustomerClient.doCheck()", e);
         }
         setChanged();
         notifyObservers(theAction);

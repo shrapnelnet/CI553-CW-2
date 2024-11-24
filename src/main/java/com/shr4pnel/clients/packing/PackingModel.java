@@ -2,11 +2,9 @@ package com.shr4pnel.clients.packing;
 
 
 import com.shr4pnel.catalogue.Basket;
-import com.shr4pnel.logging.Logger;
-import com.shr4pnel.middleware.MiddleFactory;
-import com.shr4pnel.middleware.OrderException;
-import com.shr4pnel.middleware.OrderProcessing;
-import com.shr4pnel.middleware.StockReadWriter;
+import com.shr4pnel.middleware.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicReference;
@@ -15,6 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Implements the Model of the warehouse packing client
  */
 public class PackingModel extends Observable {
+    private static final Logger packingModelLogger = LogManager.getLogger(PackingModel.class);
     private final AtomicReference<Basket> theBasket = new AtomicReference<>();
 
     private StockReadWriter theStock = null;
@@ -33,12 +32,12 @@ public class PackingModel extends Observable {
             theStock = mf.makeStockReadWriter();  // Database access
             theOrder = mf.makeOrderProcessing();  // Process order
         } catch (Exception e) {
-            Logger.error("CustomerModel.constructor\n%s", e.getMessage());
+            packingModelLogger.error("CustomerModel.constructor", e);
         }
 
         theBasket.set(null);                  // Initial Basket
         // Start a background check to see when a new order can be packed
-        new Thread(() -> checkForNewOrder()).start();
+        new Thread(this::checkForNewOrder).start();
     }
 
     /**
@@ -67,9 +66,7 @@ public class PackingModel extends Observable {
                 }                                    //
                 Thread.sleep(2000);                  // idle
             } catch (Exception e) {
-                Logger.error("%s\n%s",                // Eek!
-                        "BackGroundCheck.run()\n%s",
-                        e.getMessage());
+                packingModelLogger.error("BackgroundCheckRun", e);
             }
         }
     }
@@ -104,8 +101,7 @@ public class PackingModel extends Observable {
             notifyObservers(theAction);
         } catch (OrderException e)                // Error
         {                                         //  Of course
-            Logger.error("ReceiptModel.doOk()\n%s\n",//  should not
-                    e.getMessage()); //  happen
+            packingModelLogger.error("ReceiptModel dopacked()", e);
         }
         setChanged();
         notifyObservers(theAction);

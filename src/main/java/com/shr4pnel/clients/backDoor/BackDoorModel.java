@@ -2,10 +2,11 @@ package com.shr4pnel.clients.backDoor;
 
 import com.shr4pnel.catalogue.Basket;
 import com.shr4pnel.catalogue.Product;
-import com.shr4pnel.logging.Logger;
 import com.shr4pnel.middleware.MiddleFactory;
 import com.shr4pnel.middleware.StockException;
 import com.shr4pnel.middleware.StockReadWriter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Observable;
 
@@ -13,6 +14,7 @@ import java.util.Observable;
  * Implements the Model of the back door client
  */
 public class BackDoorModel extends Observable {
+    private static final Logger backDoorModelLogger = LogManager.getLogger(BackDoorModel.class);
     private Basket theBasket = null;            // Bought items
     private String pn = "";                      // Product being processed
 
@@ -28,7 +30,7 @@ public class BackDoorModel extends Observable {
         {
             theStock = mf.makeStockReadWriter();        // Database access
         } catch (Exception e) {
-            Logger.error("CustomerModel.constructor\n%s", e.getMessage());
+            backDoorModelLogger.error("CustomerModel.constructor", e);
         }
 
         theBasket = makeBasket();                     // Initial Basket

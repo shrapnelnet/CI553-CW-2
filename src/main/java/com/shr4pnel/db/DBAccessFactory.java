@@ -5,12 +5,12 @@
 
 package com.shr4pnel.db;
 
-import com.shr4pnel.logging.Logger;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Manages the starting up of the database.
@@ -22,20 +22,21 @@ import java.io.IOException;
 
 public class DBAccessFactory {
     private static String action;
-    private static String database;
+    private static String database = "Derby";
     private static String os;
+    
+    private static final Logger DBAccessFactoryLogger = LogManager.getLogger(DBAccessFactory.class);
 
     public static void setAction(String name) {
         action = name;
     }
 
     private static String setEnvironment() {
-        database = fileToString("Database") + action;
-        String os = System.getProperties().getProperty("os.name");
+        os = System.getProperties().getProperty("os.name");
         String arch = System.getProperties().getProperty("os.arch");
         String osVer = System.getProperties().getProperty("os.version");
-        os = String.format("%s %s %s", os, osVer, arch);
-        System.out.println(os);
+        String sysInfo = String.format("%s %s %s", os, osVer, arch);
+        DBAccessFactoryLogger.debug("System information: {}", sysInfo);
         return os;
     }
 
@@ -66,14 +67,13 @@ public class DBAccessFactory {
                 istream.close();
                 return vec;
             } else {
-                Logger.error("File %s length %d bytes too long",
-                        file, len);
+                DBAccessFactoryLogger.error("File {} length {} bytes too long", file, len);
             }
         } catch (FileNotFoundException err) {
-            Logger.error("File does not exist: fileToBytes [%s]\n", file);
+            DBAccessFactoryLogger.error("File does not exist: fileToBytes {}", file);
             System.exit(0);
         } catch (IOException err) {
-            Logger.error("IO error: fileToBytes [%s]\n", file);
+            DBAccessFactoryLogger.error("IO error: fileToBytes {}", file);
             System.exit(0);
         }
         return vec;
@@ -89,8 +89,8 @@ public class DBAccessFactory {
             File in = new File(path);
             return in.length();
         } catch (SecurityException err) {
-            Logger.error("Security error: length of file [%s]\n", path);
-            System.exit(0);
+            DBAccessFactoryLogger.error("Security error: length of file {}", path);
+            System.exit(-1);
         }
         return -1;
     }
@@ -101,7 +101,7 @@ public class DBAccessFactory {
      */
     public DBAccess getNewDBAccess() {
         setEnvironment();
-        Logger.traceA("Using [%s] as database type\n", database);
+        DBAccessFactoryLogger.trace("Using {} as database type", database);
         switch (database) {
             case "Derby":
                 return new DerbyAccess();       // Derby
@@ -118,7 +118,7 @@ public class DBAccessFactory {
                 return new LinuxAccess();       // MySQL Linux
 
             default:
-                Logger.error("DataBase [%s] not known\n", database);
+                DBAccessFactoryLogger.error("Instruction {} not implemented", database);
                 System.exit(0);
         }
         return new DBAccess();               // Unknown

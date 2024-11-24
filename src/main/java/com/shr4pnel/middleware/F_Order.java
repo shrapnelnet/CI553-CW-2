@@ -1,8 +1,9 @@
 package com.shr4pnel.middleware;
 
 import com.shr4pnel.catalogue.Basket;
-import com.shr4pnel.logging.Logger;
 import com.shr4pnel.remote.RemoteOrder_I;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.rmi.Naming;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Map;
  */
 
 public class F_Order implements OrderProcessing {
+    private static final Logger F_OrderLogger = LogManager.getLogger(F_Order.class);
     private RemoteOrder_I aR_Order = null;
     private String theOrderURL = null;
 
@@ -45,7 +47,7 @@ public class F_Order implements OrderProcessing {
 
     public void newOrder(Basket bought)
             throws OrderException {
-        Logger.trace("F_Order:newOrder()");
+        F_OrderLogger.trace("F_Order:newOrder()");
         try {
             if (aR_Order == null) connect();
             aR_Order.newOrder(bought);
@@ -57,7 +59,7 @@ public class F_Order implements OrderProcessing {
 
     public int uniqueNumber()
             throws OrderException {
-        Logger.trace("F_Order:uniqueNumber()");
+        F_OrderLogger.trace("F_Order:uniqueNumber()");
         try {
             if (aR_Order == null) connect();
             return aR_Order.uniqueNumber();
@@ -76,7 +78,7 @@ public class F_Order implements OrderProcessing {
 
     public synchronized Basket getOrderToPack()
             throws OrderException {
-        Logger.trace("F_Order:getOrderTioPack()");
+        F_OrderLogger.trace("F_Order:getOrderTioPack()");
         try {
             if (aR_Order == null) connect();
             return aR_Order.getOrderToPack();
@@ -94,7 +96,7 @@ public class F_Order implements OrderProcessing {
 
     public synchronized boolean informOrderPacked(int orderNum)
             throws OrderException {
-        Logger.trace("F_Order:informOrderPacked()");
+        F_OrderLogger.trace("F_Order:informOrderPacked()");
         try {
             if (aR_Order == null) connect();
             return aR_Order.informOrderPacked(orderNum);
@@ -111,7 +113,7 @@ public class F_Order implements OrderProcessing {
 
     public synchronized boolean informOrderCollected(int orderNum)
             throws OrderException {
-        Logger.trace("F_Order:informOrderCollected()");
+        F_OrderLogger.trace("F_Order:informOrderCollected()");
         try {
             if (aR_Order == null) connect();
             return aR_Order.informOrderCollected(orderNum);
@@ -127,7 +129,7 @@ public class F_Order implements OrderProcessing {
 
     public synchronized Map<String, List<Integer>> getOrderState()
             throws OrderException {
-        Logger.trace("F_Order:getOrderState()");
+        F_OrderLogger.trace("F_Order:getOrderState()");
         try {
             if (aR_Order == null) connect();
             return aR_Order.getOrderState();

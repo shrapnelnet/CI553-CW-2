@@ -2,8 +2,9 @@ package com.shr4pnel.clients.cashier;
 
 import com.shr4pnel.catalogue.Basket;
 import com.shr4pnel.catalogue.Product;
-import com.shr4pnel.logging.Logger;
 import com.shr4pnel.middleware.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Observable;
 
@@ -11,12 +12,14 @@ import java.util.Observable;
  * Implements the Model of the cashier client
  */
 public class CashierModel extends Observable {
+    private final static Logger cashierModelLogger = LogManager.getLogger(CashierModel.class);
     private State theState = State.process;   // Current state
     private Product theProduct = null;            // Current product
     private Basket theBasket = null;            // Bought items
     private String pn = "";                      // Product being processed
     private StockReadWriter theStock = null;
     private OrderProcessing theOrder = null;
+
     /**
      * Construct the model of the Cashier
      *
@@ -29,7 +32,7 @@ public class CashierModel extends Observable {
             theStock = mf.makeStockReadWriter();        // Database access
             theOrder = mf.makeOrderProcessing();        // Process order
         } catch (Exception e) {
-            Logger.error("CashierModel.constructor\n%s", e.getMessage());
+            cashierModelLogger.error("CashierModel.constructor", e);
         }
         theState = State.process;                  // Current state
     }
@@ -76,8 +79,7 @@ public class CashierModel extends Observable {
                         "Unknown product number " + pn;       //  product no.
             }
         } catch (StockException e) {
-            Logger.error("%s\n%s",
-                    "CashierModel.doCheck", e.getMessage());
+            cashierModelLogger.error("CashierModel.doCheck", e);
             theAction = e.getMessage();
         }
         setChanged();
@@ -110,8 +112,7 @@ public class CashierModel extends Observable {
                 }
             }
         } catch (StockException e) {
-            Logger.error("%s\n%s",
-                    "CashierModel.doBuy", e.getMessage());
+            cashierModelLogger.error("CashierModel.doBuy", e);
             theAction = e.getMessage();
         }
         theState = State.process;                   // All Done
@@ -126,8 +127,7 @@ public class CashierModel extends Observable {
         String theAction = "";
         int amount = 1;                       //  & quantity
         try {
-            if (theBasket != null &&
-                    theBasket.size() >= 1)            // items > 1
+            if (theBasket != null && theBasket.size() >= 1)            // items > 1
             {                                       // T
                 theOrder.newOrder(theBasket);       //  Process order
                 theBasket = null;                     //  reset
@@ -136,8 +136,7 @@ public class CashierModel extends Observable {
             theState = State.process;               // All Done
             theBasket = null;
         } catch (OrderException e) {
-            Logger.error("%s\n%s",
-                    "CashierModel.doCancel", e.getMessage());
+            cashierModelLogger.error("CashierModel.doCancel", e);
             theAction = e.getMessage();
         }
         theBasket = null;
@@ -164,8 +163,7 @@ public class CashierModel extends Observable {
                 theBasket = makeBasket();                //  basket list
                 theBasket.setOrderNum(uon);            // Add an order number
             } catch (OrderException e) {
-                Logger.error("Comms failure\n" +
-                        "CashierModel.makeBasket()\n%s", e.getMessage());
+                cashierModelLogger.error("Comms failure CashierModel.makeBasket()", e);
             }
         }
     }

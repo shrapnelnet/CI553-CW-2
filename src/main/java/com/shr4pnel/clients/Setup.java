@@ -2,7 +2,13 @@ package com.shr4pnel.clients;
 
 import com.shr4pnel.db.DBAccess;
 import com.shr4pnel.db.DBAccessFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -14,134 +20,40 @@ import java.util.ArrayList;
  */
 
 class Setup {
-    private static final String[] sqlStatements = {
-
-//  " SQL code to set up database tables",
-
-//  "drop table ProductList",
-//  "drop table StockList",
-
-
-            "drop table ProductTable",
-            "create table ProductTable (" +
-                    "productNo      Char(4)," +
-                    "description    Varchar(40)," +
-                    "picture        Varchar(80)," +
-                    "price          Float)",
-
-            "insert into ProductTable values " +
-                    "('0001', '40 inch LED HD TV', 'images/pic0001.jpg', 269.00)",
-            "insert into ProductTable values " +
-                    "('0002', 'DAB Radio',         'images/pic0002.jpg', 29.99)",
-            "insert into ProductTable values " +
-                    "('0003', 'Toaster',           'images/pic0003.jpg', 19.99)",
-            "insert into ProductTable values " +
-                    "('0004', 'Watch',             'images/pic0004.jpg', 29.99)",
-            "insert into ProductTable values " +
-                    "('0005', 'Digital Camera',    'images/pic0005.jpg', 89.99)",
-            "insert into ProductTable values " +
-                    "('0006', 'MP3 player',        'images/pic0006.jpg', 7.99)",
-            "insert into ProductTable values " +
-                    "('0007', '32Gb USB2 drive',   'images/pic0007.jpg', 6.99)",
-//  "select * from ProductTable",
-
-
-            "drop table StockTable",
-            "create table StockTable (" +
-                    "productNo      Char(4)," +
-                    "stockLevel     Integer)",
-
-            "insert into StockTable values ( '0001',  90 )",
-            "insert into StockTable values ( '0002',  20 )",
-            "insert into StockTable values ( '0003',  33 )",
-            "insert into StockTable values ( '0004',  10 )",
-            "insert into StockTable values ( '0005',  17 )",
-            "insert into StockTable values ( '0006',  15 )",
-            "insert into StockTable values ( '0007',  01 )",
-
-            "select * from StockTable, ProductTable " +
-                    " where StockTable.productNo = ProductTable.productNo"
-
-    };
+    private final static Logger setupLogger = LogManager.getLogger(Setup.class);
 
     public static void main(String[] args) {
-        Connection theCon = null;      // Connection to database
-        DBAccess dbDriver = null;
+
+        Connection conn = null;
+        DBAccess db = new DBAccess();
         DBAccessFactory.setAction("Create");
-        System.out.println("Setup CatShop database of stock items");
+        setupLogger.debug("Setup CatShop database of stock items");
+
         try {
-            dbDriver = (new DBAccessFactory()).getNewDBAccess();
-            dbDriver.loadDriver();
-            theCon = DriverManager.getConnection
-                    (dbDriver.urlOfDatabase(),
-                            dbDriver.username(),
-                            dbDriver.password());
+            db = (new DBAccessFactory()).getNewDBAccess();
+            db.loadDriver();
+            conn = DriverManager.getConnection(db.urlOfDatabase());
         } catch (SQLException e) {
-            System.err.println("Problem with connection to " +
-                    dbDriver.urlOfDatabase());
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState:     " + e.getSQLState());
-            System.out.println("VendorError:  " + e.getErrorCode());
+            setupLogger.fatal("Problem connecting to {}.\nSQLState: {}\nErrorCode: {}", db.urlOfDatabase(), e.getSQLState(), e.getErrorCode(), e);
             System.exit(-1);
         } catch (Exception e) {
-            System.err.println("Can not load JDBC/ODBC driver.");
+            setupLogger.fatal("Failed to connect to Apache Derby server", e);
             System.exit(-1);
         }
-
-        Statement stmt = null;
-        try {
-            stmt = theCon.createStatement();
-        } catch (Exception e) {
-            System.err.println("problems creating statement object");
-        }
-
-        // execute SQL commands to create table, insert data
-        for (String sqlStatement : sqlStatements) {
-            try {
-                System.out.println(sqlStatement);
-                switch (sqlStatement.charAt(0)) {
-                    case '/':
-                        System.out.println("------------------------------");
-                        break;
-                    case 's':
-                    case 'f':
-                        query(stmt, dbDriver.urlOfDatabase(), sqlStatement);
-                        break;
-                    case '*':
-                        if (sqlStatement.length() >= 2)
-                            switch (sqlStatement.charAt(1)) {
-                                case 'c':
-                                    theCon.commit();
-                                    break;
-                                case 'r':
-                                    theCon.rollback();
-                                    break;
-                                case '+':
-                                    theCon.setAutoCommit(true);
-                                    break;
-                                case '-':
-                                    theCon.setAutoCommit(false);
-                                    break;
-                            }
-                        break;
-                    default:
-                        stmt.execute(sqlStatement);
+        String[] queries = getSQLInitializationScript();
+        for (String statement : queries) {
+            try (Statement stmt = conn.createStatement()) {
+                setupLogger.trace("Processing {}", statement);
+                // todo write about autoclosables
+                if (statement.contains("CREATE") || statement.contains("INSERT")) {
+                    stmt.executeUpdate(statement);
+                } else {
+                    stmt.executeQuery(statement);
                 }
-                //System.out.println();
-            } catch (Exception e) {
-                System.out.println("problems with SQL sent to " +
-                        dbDriver.urlOfDatabase() +
-                        "\n" + sqlStatement + "\n" + e.getMessage());
+            } catch (SQLException e) {
+                setupLogger.error("Error occured while processing statement during setup", e);
             }
         }
-
-        try {
-            theCon.close();
-        } catch (Exception e) {
-            System.err.println("problems with close " +
-                    ": " + e.getMessage());
-        }
-
     }
 
 
@@ -176,8 +88,7 @@ class Setup {
 
 
         } catch (Exception e) {
-            System.err.println("problems with SQL sent to " + url +
-                    "\n" + e.getMessage());
+            System.err.println("problems with SQL sent to " + url + "\n" + e.getMessage());
         }
     }
 
@@ -191,6 +102,27 @@ class Setup {
                 res.append(' ');
             return res.toString();
         }
+    }
+
+    private static String[] getSQLInitializationScript() {
+        String[] SQL = null;
+        try (InputStream is = Setup.class.getResourceAsStream("/com/shr4pnel/config/init.sql")) {
+            assert is != null;
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            ArrayList<String> SQLStatements = new ArrayList<>();
+            String line;
+            while ((line = br.readLine()) != null) {
+                SQLStatements.add(line);
+            }
+            // felt pretty cool writing this one ;)
+            // setupLogger.trace("SQL AS FOLLOWS: {}", sb.toString());
+            SQL = SQLStatements.toArray(String[]::new);
+        } catch (IOException e) {
+            setupLogger.fatal("Can't find /config/init.sql. Is it on the modulepath?", e);
+            System.exit(1);
+        }
+        //setupLogger.debug("SQL processed as: {}", SQL);
+        return SQL;
     }
 
 }

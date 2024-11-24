@@ -1,5 +1,7 @@
 package com.shr4pnel.db;
 
+import java.sql.DriverManager;
+
 /**
  * Apache Derby database access
  *
@@ -8,16 +10,13 @@ package com.shr4pnel.db;
  */
 
 class DerbyAccess extends DBAccess {
-    private static final String URLdb =
-            "jdbc:derby:catshop.db";
-    private static final String DRIVER =
-            "org.apache.derby.jdbc.EmbeddedDriver";
+    private static final String URLdb = "jdbc:derby:derby";
 
     /**
      * Load the Apache Derby database driver
      */
     public void loadDriver() throws Exception {
-        Class.forName(DRIVER).newInstance();
+        DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
     }
 
     /**

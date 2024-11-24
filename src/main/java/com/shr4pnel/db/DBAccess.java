@@ -7,23 +7,23 @@
 
 package com.shr4pnel.db;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.sql.DriverManager;
+
 /**
  * Base class that defines the access to the database driver
  */
 public class DBAccess {
+    private static final Logger dbAccessLogger = LogManager.getLogger(DBAccess.class);
+    private String connURL = "jdbc:derby:derby";
+
     public void loadDriver() throws Exception {
-        throw new RuntimeException("No driver");
+        DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
     }
 
     public String urlOfDatabase() {
-        return "";
-    }
-
-    public String username() {
-        return "";
-    }
-
-    public String password() {
-        return "";
+        return connURL;
     }
 }

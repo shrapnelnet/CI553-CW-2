@@ -11,8 +11,9 @@ package com.shr4pnel.middleware;
  */
 
 import com.shr4pnel.catalogue.Product;
-import com.shr4pnel.logging.Logger;
 import com.shr4pnel.remote.RemoteStockR_I;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.rmi.Naming;
@@ -23,11 +24,12 @@ import java.rmi.RemoteException;
  */
 
 public class F_StockR implements StockReader {
+    private static final Logger F_StockRLogger = LogManager.getLogger(F_StockR.class);
     private RemoteStockR_I aR_StockR = null;
     private String theStockURL = null;
 
     public F_StockR(String url) {
-        Logger.trace("F_StockR: %s", url);
+        F_StockRLogger.trace("F_StockR: {}", url);
         theStockURL = url;
     }
 
@@ -39,20 +41,20 @@ public class F_StockR implements StockReader {
         } catch (Exception e)                           // Failure to
         {                                               //  attach to the
             aR_StockR = null;
-            throw new StockException("Com: " +
-                    e.getMessage());  //  object
+            throw new StockException("Com: " + e.getMessage());  //  object
 
         }
     }
 
     /**
      * Checks if the product exits in the stock list
+     *
      * @return true if exists otherwise false
      */
 
     public synchronized boolean exists(String number)
             throws StockException {
-        Logger.trace("F_StockR:exists()");
+        F_StockRLogger.trace("F_StockR:exists()");
         try {
             if (aR_StockR == null) connect();
             return aR_StockR.exists(number);
@@ -64,12 +66,13 @@ public class F_StockR implements StockReader {
 
     /**
      * Returns details about the product in the stock list
+     *
      * @return StockNumber, Description, Price, Quantity
      */
 
     public synchronized Product getDetails(String number)
             throws StockException {
-        Logger.trace("F_StockR:getDetails()");
+        F_StockRLogger.trace("F_StockR:getDetails()");
         try {
             if (aR_StockR == null) connect();
             return aR_StockR.getDetails(number);
@@ -82,7 +85,7 @@ public class F_StockR implements StockReader {
 
     public synchronized ImageIcon getImage(String number)
             throws StockException {
-        Logger.trace("F_StockR:getImage()");
+        F_StockRLogger.trace("F_StockR:getImage()");
         try {
             if (aR_StockR == null) connect();
             return aR_StockR.getImage(number);

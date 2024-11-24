@@ -2,9 +2,10 @@ package com.shr4pnel.orders;
 
 import com.shr4pnel.catalogue.Basket;
 import com.shr4pnel.catalogue.Product;
-import com.shr4pnel.logging.Logger;
 import com.shr4pnel.middleware.OrderException;
 import com.shr4pnel.middleware.OrderProcessing;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -27,6 +28,7 @@ import java.util.*;
  */
 
 public class OrderX implements OrderProcessing {
+    private static final Logger orderXLogger = LogManager.getLogger(OrderX.class);
     private static int theNextNumber = 1;          // Start at 1
     // Orders entered but waiting to be processed (picked)
     private final ArrayList<Basket> theWaitingTray = new ArrayList<Basket>();
@@ -43,7 +45,7 @@ public class OrderX implements OrderProcessing {
      * @Param basket an instance of a basket
      * @Return Description of contents
      */
-    private String asString(Basket basket) {
+    private String basketToString(Basket basket) {
         StringBuilder sb = new StringBuilder(1024);
         Formatter fr = new Formatter(sb);
         fr.format("#%d (", basket.getOrderNum());
@@ -73,10 +75,10 @@ public class OrderX implements OrderProcessing {
     public synchronized void newOrder(Basket bought)
             throws OrderException {
         // You need to modify and fill in the correct code
-        Logger.trace("DEBUG: New order");
+        orderXLogger.debug("New order");
         theWaitingTray.add(bought);
         for (Basket bl : theWaitingTray) {
-            Logger.trace("Order: " + asString(bl));
+            orderXLogger.trace("Order: {}", basketToString(bl));
         }
     }
 
@@ -90,7 +92,7 @@ public class OrderX implements OrderProcessing {
     public synchronized Basket getOrderToPack()
             throws OrderException {
         // You need to modify and fill in the correct code
-        Logger.trace("DEBUG: Get order to pack");
+        orderXLogger.debug("Order packing");
         if (theWaitingTray.size() > 0) {
             Basket process = theWaitingTray.remove(0);
             theBeingPickedTray.add(process);
@@ -111,7 +113,7 @@ public class OrderX implements OrderProcessing {
     public synchronized boolean informOrderPacked(int orderNum)
             throws OrderException {
         // You need to modify and fill in the correct code
-        Logger.trace("DEBUG: Order picked [%d]", orderNum);
+        orderXLogger.trace("Order #{} picked", orderNum);
         for (int i = 0; i < theBeingPickedTray.size(); i++) {
             if (theBeingPickedTray.get(i).getOrderNum() == orderNum) {
                 Basket picked = theBeingPickedTray.remove(i);
@@ -132,7 +134,7 @@ public class OrderX implements OrderProcessing {
     public synchronized boolean informOrderCollected(int orderNum)
             throws OrderException {
         // You need to modify and fill in the correct code
-        Logger.trace("DEBUG: Order collected [%d]", orderNum);
+        orderXLogger.debug("Order #{} collected", orderNum);
         for (int i = 0; i < theToBeCollectedTray.size(); i++) {
             if (theToBeCollectedTray.get(i).getOrderNum() == orderNum) {
                 theToBeCollectedTray.remove(i);
@@ -157,7 +159,7 @@ public class OrderX implements OrderProcessing {
 
     public synchronized Map<String, List<Integer>> getOrderState()
             throws OrderException {
-        Logger.trace("DEBUG: get state of order system");
+        orderXLogger.debug("get state of order system");
         Map<String, List<Integer>> res =
                 new HashMap<String, List<Integer>>();
         res.put("Waiting", orderNos(theWaitingTray));

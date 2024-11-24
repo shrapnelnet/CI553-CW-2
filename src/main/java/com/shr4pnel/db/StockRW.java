@@ -9,9 +9,10 @@ package com.shr4pnel.db;
  */
 
 import com.shr4pnel.catalogue.Product;
-import com.shr4pnel.logging.Logger;
 import com.shr4pnel.middleware.StockException;
 import com.shr4pnel.middleware.StockReadWriter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 
@@ -24,6 +25,7 @@ import java.sql.SQLException;
  * Implements read/write access to the stock database.
  */
 public class StockRW extends StockR implements StockReadWriter {
+    private static final Logger stockRWLogger = LogManager.getLogger(StockRW.class);
     /*
      * Connects to database
      */
@@ -39,7 +41,7 @@ public class StockRW extends StockR implements StockReadWriter {
      */
     public synchronized boolean buyStock(String pNum, int amount)
             throws StockException {
-        Logger.trace("DB StockRW: buyStock(%s,%d)", pNum, amount);
+        stockRWLogger.trace("StockRW: buyStock({}, {})", pNum, amount);
         int updates = 0;
         try {
             getStatementObject().executeUpdate(
@@ -51,7 +53,7 @@ public class StockRW extends StockR implements StockReadWriter {
         } catch (SQLException e) {
             throw new StockException("SQL buyStock: " + e.getMessage());
         }
-        Logger.trace("buyStock() updates -> %n", updates);
+        stockRWLogger.trace("buyStock() updates -> {}", updates);
         return updates > 0;   // sucess ?
     }
 
@@ -69,7 +71,7 @@ public class StockRW extends StockR implements StockReadWriter {
                             "         where productNo = '" + pNum + "'"
             );
             //getConnectionObject().commit();
-            Logger.trace("DB StockRW: addStock(%s,%d)", pNum, amount);
+            stockRWLogger.trace("StockRW: addStock({}, {})", pNum, amount);
         } catch (SQLException e) {
             throw new StockException("SQL addStock: " + e.getMessage());
         }
@@ -84,8 +86,7 @@ public class StockRW extends StockR implements StockReadWriter {
      */
     public synchronized void modifyStock(Product detail)
             throws StockException {
-        Logger.trace("DB StockRW: modifyStock(%s)",
-                detail.getProductNum());
+        stockRWLogger.trace("DB StockRW: modifyStock({})", detail.getProductNum());
         try {
             if (!exists(detail.getProductNum())) {
                 getStatementObject().executeUpdate(
