@@ -3,6 +3,7 @@ package com.shr4pnel.clients.customer;
 import com.shr4pnel.middleware.MiddleFactory;
 import com.shr4pnel.middleware.Names;
 import com.shr4pnel.middleware.RemoteMiddleFactory;
+
 import javax.swing.*;
 
 /** The standalone Customer Client */

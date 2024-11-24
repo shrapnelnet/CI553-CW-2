@@ -9,11 +9,14 @@ package com.shr4pnel.middleware;
  */
 import com.shr4pnel.catalogue.Product;
 import com.shr4pnel.remote.RemoteStockR_I;
-import java.rmi.Naming;
-import java.rmi.RemoteException;
-import javax.swing.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+
+import javax.swing.*;
 
 /** Setup connection to the middle tier */
 public class F_StockR implements StockReader {

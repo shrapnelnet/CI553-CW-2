@@ -9,9 +9,11 @@ package com.shr4pnel.db;
 import com.shr4pnel.catalogue.Product;
 import com.shr4pnel.middleware.StockException;
 import com.shr4pnel.middleware.StockReadWriter;
-import java.sql.SQLException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.sql.SQLException;
 
 // There can only be 1 ResultSet opened per statement
 // so no simultaneous use of the statement object

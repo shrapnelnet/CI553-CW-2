@@ -29,7 +29,8 @@ public class BackDoorClient {
         BackDoorController cont = new BackDoorController(model, view);
         view.setController(cont);
 
-        model.addObserver(view); // Add observer to the model - view is observer, model is Observable
+        model.addObserver(
+                view); // Add observer to the model - view is observer, model is Observable
         window.setVisible(true); // Display Screen
     }
 }

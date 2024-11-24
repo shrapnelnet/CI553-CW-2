@@ -2,11 +2,13 @@ package com.shr4pnel.middleware;
 
 import com.shr4pnel.catalogue.Basket;
 import com.shr4pnel.remote.RemoteOrder_I;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.rmi.Naming;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 // There can only be 1 ResultSet opened per statement
 // so no simultaneous use of the statement object

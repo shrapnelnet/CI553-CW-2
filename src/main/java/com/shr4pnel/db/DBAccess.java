@@ -6,9 +6,10 @@
  */
 package com.shr4pnel.db;
 
-import java.sql.DriverManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.sql.DriverManager;
 
 /** Base class that defines the access to the database driver */
 public class DBAccess {

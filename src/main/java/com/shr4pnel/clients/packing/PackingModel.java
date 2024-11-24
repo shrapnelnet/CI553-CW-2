@@ -2,10 +2,12 @@ package com.shr4pnel.clients.packing;
 
 import com.shr4pnel.catalogue.Basket;
 import com.shr4pnel.middleware.*;
-import java.util.Observable;
-import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Observable;
+import java.util.concurrent.atomic.AtomicReference;
 
 /** Implements the Model of the warehouse packing client */
 public class PackingModel extends Observable {

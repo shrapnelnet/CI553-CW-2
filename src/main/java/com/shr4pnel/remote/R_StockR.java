@@ -3,7 +3,9 @@ package com.shr4pnel.remote;
 import com.shr4pnel.catalogue.Product;
 import com.shr4pnel.db.StockR;
 import com.shr4pnel.middleware.StockException;
+
 import java.rmi.RemoteException;
+
 import javax.swing.*;
 
 // There can only be 1 ResultSet opened per statement
