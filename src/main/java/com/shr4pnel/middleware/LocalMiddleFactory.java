@@ -25,7 +25,8 @@ public class LocalMiddleFactory implements MiddleFactory {
      * object.
      */
     public StockReader makeStockReader() throws StockException {
-        if (aStockR == null) aStockR = new StockR();
+        if (aStockR == null)
+            aStockR = new StockR();
         return aStockR;
     }
 
