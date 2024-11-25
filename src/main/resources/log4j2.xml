@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://logging.apache.org/xml/ns" xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://logging.apache.org/xml/ns"
+               xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-config-2.xsd">
     <Appenders>
         <Console name="CONSOLE">
-            <PatternLayout pattern="%-5p %l [%t]: %m%n"/>
+            <PatternLayout pattern="[ %highlight{%-5p} ] %l [%t]: %m%n"/>
         </Console>
+        <Console name="springboot-lessverbose">
+            <PatternLayout pattern="[ %highlight{%-5p}] [%t]: %m%n"/>
+        </Console>
+        <File name="com.shr4pnel.log" fileName="com.shr4pnel.log">
+            <CsvLogEventLayout format="RFC4180"/>
+        </File>
+        <File name="springboot" fileName="springboot.log">
+            <CsvLogEventLayout format="RFC4180"/>
+        </File>
     </Appenders>
     <Loggers>
-        <Logger name="com.shr4pnel" level="TRACE"/>
-        <Root level="INFO">
+        <Logger name="com.shr4pnel" level="ALL">
+            <AppenderRef ref="com.shr4pnel.log"/>
+        </Logger>
+        <Logger name="com.shr4pnel" level="TRACE" additivity="false">
+            <AppenderRef ref="CONSOLE"/>
+        </Logger>
+        <Logger name="org.springframework.boot" level="INFO" additivity="false">
+            <AppenderRef ref="springboot-lessverbose"/>
+        </Logger>
+        <Root level="WARN">
             <AppenderRef ref="CONSOLE"/>
         </Root>
     </Loggers>
