@@ -13,6 +13,7 @@ import com.shr4pnel.middleware.StockReadWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 // There can only be 1 ResultSet opened per statement
@@ -65,19 +66,14 @@ public class StockRW extends StockR implements StockReadWriter {
      * @param pNum Product number
      * @param amount Amount of stock to add
      */
-    public synchronized void addStock(String pNum, int amount) throws StockException {
-        try {
-            getStatementObject()
-                    .executeUpdate(
-                            "update StockTable set stockLevel = stockLevel + "
-                                    + amount
-                                    + "         where productNo = '"
-                                    + pNum
-                                    + "'");
-            // getConnectionObject().commit();
+    public synchronized void addStock(String pNum, int amount) {
+        try (PreparedStatement ps = getConnectionObject().prepareStatement("UPDATE STOCKTABLE SET STOCKLEVEL = STOCKLEVEL + ? WHERE PRODUCTNO = ?")) {
+            ps.setInt(1, amount);
+            ps.setString(2, pNum);
+            ps.executeUpdate();
             stockRWLogger.trace("StockRW: addStock({}, {})", pNum, amount);
         } catch (SQLException e) {
-            throw new StockException("SQL addStock: " + e.getMessage());
+            stockRWLogger.error("Failed to add new stock", e);
         }
     }
 

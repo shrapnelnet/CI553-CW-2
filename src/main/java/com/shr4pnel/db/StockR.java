@@ -6,7 +6,9 @@
  */
 package com.shr4pnel.db;
 
+import com.google.gson.Gson;
 import com.shr4pnel.catalogue.Product;
+import com.shr4pnel.gsonhelpers.GetAllStockHelper;
 import com.shr4pnel.middleware.StockException;
 import com.shr4pnel.middleware.StockReader;
 
@@ -14,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -29,6 +32,7 @@ public class StockR implements StockReader {
     private static final Logger StockRLogger = LogManager.getLogger(StockR.class);
     private Connection conn = null; // Connection to database
     private Statement theStmt = null; // Statement object
+    private PreparedStatement preparedStatement;
 
     /**
      * Connects to database Uses a factory method to help setup the connection
@@ -39,21 +43,12 @@ public class StockR implements StockReader {
         try {
             DBAccess dbDriver = (new DBAccessFactory()).getNewDBAccess();
             dbDriver.loadDriver();
-
-            //            conn = DriverManager.getConnection
-            //                    (dbDriver.urlOfDatabase(),
-            //                            dbDriver.username(),
-            //                            dbDriver.password());
             conn = DriverManager.getConnection(dbDriver.urlOfDatabase());
-
             theStmt = conn.createStatement();
-            conn.setAutoCommit(true);
         } catch (SQLException e) {
             StockRLogger.error("Error during SQL execution", e);
-            // all this accomplishes is muddling the stacktrace
-            // throw new StockException("SQL problem:" + e.getMessage());
         } catch (Exception e) {
-            throw new StockException("Can not load database driver.");
+            throw new StockException("Cannot load database driver.");
         }
     }
 
@@ -159,5 +154,29 @@ public class StockR implements StockReader {
 
         // DEBUG.trace( "DB StockR: getImage -> %s", filename );
         return new ImageIcon(filename);
+    }
+
+    public synchronized String getAllStock() {
+        ResultSet res;
+        String json = null;
+        try (Statement stmt = conn.createStatement()) {
+            res = stmt.executeQuery("SELECT STOCKLEVEL, P.PRODUCTNO, P.DESCRIPTION, P.PRICE FROM STOCKTABLE INNER JOIN APP.PRODUCTTABLE P on STOCKTABLE.PRODUCTNO = P.PRODUCTNO");
+            ArrayList<GetAllStockHelper> jsonArray = new ArrayList<>();
+            while (res.next()) {
+                long stockLevel = res.getLong("STOCKLEVEL");
+                long price = res.getLong("PRICE");
+                String name = res.getString("DESCRIPTION");
+                String pNum = res.getString("PRODUCTNO");
+                GetAllStockHelper currentRow = new GetAllStockHelper(name, price, stockLevel, pNum);
+                jsonArray.add(currentRow);
+            }
+
+            Object[] jsonArrayComplete = jsonArray.toArray();
+            Gson gson = new Gson();
+            json = gson.toJson(jsonArrayComplete);
+        } catch (SQLException e) {
+            StockRLogger.error("Failed to fetch results. Is the database up?");
+        }
+        return json;
     }
 }
