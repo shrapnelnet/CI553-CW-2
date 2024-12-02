@@ -13,8 +13,10 @@ import com.shr4pnel.middleware.StockReadWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.UUID;
 
 // There can only be 1 ResultSet opened per statement
 // so no simultaneous use of the statement object
@@ -22,7 +24,7 @@ import java.sql.SQLException;
 //
 
 /** Implements read/write access to the stock database. */
-public class StockRW extends StockR implements StockReadWriter {
+public class StockRW extends StockR {
     private static final Logger stockRWLogger = LogManager.getLogger(StockRW.class);
 
     /*
@@ -33,40 +35,13 @@ public class StockRW extends StockR implements StockReadWriter {
     }
 
     /**
-     * Customer buys stock, quantity decreased if sucessful.
-     *
-     * @param pNum Product number
-     * @param amount Amount of stock bought
-     * @return true if succeeds else false
-     */
-    public synchronized boolean buyStock(String pNum, int amount) throws StockException {
-        stockRWLogger.trace("StockRW: buyStock({}, {})", pNum, amount);
-        int updates = 0;
-        try {
-            getStatementObject()
-                    .executeUpdate(
-                            "update StockTable set stockLevel = stockLevel-"
-                                    + amount
-                                    + "       where productNo = '"
-                                    + pNum
-                                    + "' and "
-                                    + "             stockLevel >= "
-                                    + amount);
-            updates = 1; // getStatementObject().getUpdateCount();
-        } catch (SQLException e) {
-            throw new StockException("SQL buyStock: " + e.getMessage());
-        }
-        stockRWLogger.trace("buyStock() updates -> {}", updates);
-        return updates > 0; // sucess ?
-    }
-
-    /**
      * Adds stock (Re-stocks) to the store. Assumed to exist in database.
      *
      * @param pNum Product number
      * @param amount Amount of stock to add
      */
     public synchronized void addStock(String pNum, int amount) {
+        stockRWLogger.debug("UPDATE STOCKTABLE SET STOCKLEVEL = STOCKLEVEL + {} WHERE PRODUCTNO = {}", amount, pNum);
         try (PreparedStatement ps = getConnectionObject().prepareStatement("UPDATE STOCKTABLE SET STOCKLEVEL = STOCKLEVEL + ? WHERE PRODUCTNO = ?")) {
             ps.setInt(1, amount);
             ps.setString(2, pNum);
@@ -77,65 +52,30 @@ public class StockRW extends StockR implements StockReadWriter {
         }
     }
 
-    /**
-     * Modifies Stock details for a given product number. Assumed to exist in database. Information
-     * modified: Description, Price
-     *
-     * @param detail Product details to change stocklist to
-     */
-    public synchronized void modifyStock(Product detail) throws StockException {
-        stockRWLogger.trace("DB StockRW: modifyStock({})", detail.getProductNum());
-        try {
-            if (!exists(detail.getProductNum())) {
-                getStatementObject()
-                        .executeUpdate(
-                                "insert into ProductTable values ('"
-                                        + detail.getProductNum()
-                                        + "', "
-                                        + "'"
-                                        + detail.getDescription()
-                                        + "', "
-                                        + "'images/Pic"
-                                        + detail.getProductNum()
-                                        + ".jpg', "
-                                        + "'"
-                                        + detail.getPrice()
-                                        + "' "
-                                        + ")");
-                getStatementObject()
-                        .executeUpdate(
-                                "insert into StockTable values ('"
-                                        + detail.getProductNum()
-                                        + "', "
-                                        + "'"
-                                        + detail.getQuantity()
-                                        + "' "
-                                        + ")");
-            } else {
-                getStatementObject()
-                        .executeUpdate(
-                                "update ProductTable "
-                                        + "  set description = '"
-                                        + detail.getDescription()
-                                        + "' , "
-                                        + "      price       = "
-                                        + detail.getPrice()
-                                        + "  where productNo = '"
-                                        + detail.getProductNum()
-                                        + "' ");
-
-                getStatementObject()
-                        .executeUpdate(
-                                "update StockTable set stockLevel = "
-                                        + detail.getQuantity()
-                                        + "  where productNo = '"
-                                        + detail.getProductNum()
-                                        + "'");
-            }
-            // getConnectionObject().commit();
-
+    public synchronized void addOrder(UUID uuid) {
+        Date date = new Date(System.currentTimeMillis());
+        stockRWLogger.debug("INSERT INTO ORDERTABLE VALUES({},{})", uuid, date);
+        try (PreparedStatement ps = getConnectionObject().prepareStatement("INSERT INTO ORDERTABLE VALUES (?,?)")) {
+            ps.setString(1, String.valueOf(uuid));
+            ps.setDate(2, date);
+            ps.executeUpdate();
         } catch (SQLException e) {
-            throw new StockException("SQL modifyStock: " + e.getMessage());
+            stockRWLogger.error("Failed to add order to OrderTable", e);
+        }
+    }
+
+    public synchronized void addBasket(UUID orderID, String pNum, int quantity) {
+        try (PreparedStatement ps = getConnectionObject().prepareStatement("INSERT INTO BASKETTABLE VALUES (?,?,?,?)")) {
+            UUID uuid = UUID.randomUUID();
+            stockRWLogger.debug("INSERT INTO BASKETTABLE VALUES({},{},{},{})", uuid, orderID, pNum, quantity);
+            ps.setString(1, String.valueOf(uuid));
+            ps.setString(2, String.valueOf(orderID));
+            ps.setString(3, pNum);
+            ps.setInt(4, quantity);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            stockRWLogger.error("Failed to add basket item", e);
         }
     }
 }
+
