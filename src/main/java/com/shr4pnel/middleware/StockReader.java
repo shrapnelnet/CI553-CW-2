@@ -11,16 +11,6 @@ import javax.swing.*;
  * @version 2.0
  */
 public interface StockReader {
-
-    /**
-     * Checks if the product exits in the stock list
-     *
-     * @param pNum Product nymber
-     * @return true if exists otherwise false
-     * @throws StockException if issue
-     */
-    boolean exists(String pNum) throws StockException;
-
     /**
      * Returns details about the product in the stock list
      *
