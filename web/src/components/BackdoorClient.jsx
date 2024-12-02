@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react"
+import { useState } from "react"
 import {
     Box,
     Button,
@@ -11,16 +11,13 @@ import {
     Typography
 } from "@mui/material"
 
-export default function BackdoorClient() {
-    const [items, setItems] = useState([])
-    const [currentItemIndex, setCurrentItemIndex] = useState(-1)
+export default function BackdoorClient({items, setRefetchStocklist, setFetchError}) {
+    const [currentItemIndex, setCurrentItemIndex] = useState("")
     const [buttonsDisabled, setButtonsDisabled] = useState(true)
     const [queryAll, setQueryAll] = useState(false)
     const [currentItem, setCurrentItem] = useState({})
     const [tableDisplay, setTableDisplay] = useState(false)
-    const [fetchError, setFetchError] = useState(false)
     const [quantity, setQuantity] = useState(0)
-    const [refetchStocklist, setRefetchStocklist] = useState(false)
     const [quantityZeroError, setQuantityZeroError] = useState(false)
     const [showTotal, setShowTotal] = useState(false)
     const [orderTotal, setOrderTotal] = useState(0)
@@ -28,28 +25,17 @@ export default function BackdoorClient() {
     const [shouldDisableOrderButtons, setShouldDisableOrderButtons] = useState(false)
 
     // state asynchronous shit can suck my penis !!!!
-    const stockChosen = (event) => {
+    const handleStockChosen = (event) => {
         setButtonsDisabled(false)
         setCurrentItemIndex(event.target.value)
         const currentItemIndexSynchronous = event.target.value
         setCurrentItem(items[currentItemIndexSynchronous])
     }
 
-    useEffect(() => {
-        fetch("http://localhost:3000/api/stock")
-            .then((res) => res.json())
-            .then((res) => {
-                setItems(res)
-            })
-            .catch(() => {
-                setFetchError(true)
-            })
-    }, [refetchStocklist])
 
     const queryItem = () => {
         setQueryAll(false)
         setTableDisplay(true)
-        console.log(currentItemIndex)
     }
 
     const queryAllItems = () => {
@@ -65,7 +51,7 @@ export default function BackdoorClient() {
         setFetchError(false)
         setShowTotal(false)
         setShowOrderSuccess(false)
-        setCurrentItemIndex(-1)
+        setCurrentItemIndex("")
     }
 
     const order = () => {
@@ -83,7 +69,7 @@ export default function BackdoorClient() {
 
     const finalizeOrder = () => {
         setShouldDisableOrderButtons(true)
-        fetch("http://localhost:3000/api/buy", {
+        fetch("http://localhost:3000/api/staff/buy", {
             method: "POST",
             body: JSON.stringify({
                 quantity,
@@ -98,6 +84,14 @@ export default function BackdoorClient() {
                 }
                 setFetchError(true)
             })
+            .then(async () => {
+                setTimeout(() => {
+                    clear()
+                }, 1500)
+            })
+            .catch(() => {
+                setFetchError(true)
+            })
     }
 
     const quantityChange = (event) => {
@@ -110,15 +104,15 @@ export default function BackdoorClient() {
     return (
         <Box sx={{marginTop: 1, padding: 5}}>
             <Box sx={{display: "flex", justifyContent: "center", marginBottom: 5}}>
-                <Typography variant={"h4"}>Backdoor Client Model</Typography>
+                <Typography variant={"h4"}>Backdoor Client</Typography>
             </Box>
             <FormControl fullWidth>
                 <Box display={"flex"} justifyContent={"center"}>
                     <InputLabel id={"stock-name"}>Stock List</InputLabel>
-                    <Select sx={{ width: 250, marginRight: 5 }} value={currentItemIndex} onChange={stockChosen} labelId={"stock-name"}>
+                    <Select sx={{ width: 250, marginRight: 5 }} value={currentItemIndex} onChange={handleStockChosen} labelId={"stock-name"}>
                         {
                             items.length > 0 && items.map((item, iterator) => (
-                                <MenuItem key={iterator} value={iterator}>{item.name}</MenuItem>
+                                <MenuItem key={item.name} value={iterator}>{item.name}</MenuItem>
                             ))
                         }
                     </Select>
@@ -128,15 +122,8 @@ export default function BackdoorClient() {
                     <Button onClick={queryItem} disabled={buttonsDisabled} sx={{ marginRight: 1 }} variant={"contained"}>Query</Button>
                     <Button onClick={order} disabled={buttonsDisabled} variant={"contained"} sx={{ marginRight: 1 }}>Order</Button>
                     <Button onClick={queryAllItems} variant={"outlined"} sx={{ marginRight: 1 }}>Query All</Button>
-                    <Button onClick={clear} variant={"outlined"}>Clear</Button>
+                    <Button onClick={clear} variant={"text"}>Clear</Button>
                 </Box>
-                {
-                    fetchError && (
-                        <Box>
-                            <Typography color={"error"} textAlign={"center"} variant={"subtitle1"}>An error occurred fetching the stock-list. Is the database up?</Typography>
-                        </Box>
-                    )
-                }
                 {
                     quantityZeroError && (
                         <Box>

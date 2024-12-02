@@ -1,22 +1,41 @@
 import "./index.css"
-import {Box, Tab, Tabs,} from "@mui/material";
-import {useState} from "react";
+import {Box, Tab, Tabs, Typography,} from "@mui/material";
+import {useEffect, useState} from "react";
 import TabPanel from "./components/TabPanel.jsx";
-
-export const tabEnum = {
-    BACKDOOR: 0,
-    CUSTOMER: 1,
-    CASHIER: 2,
-    PACKING: 3
-}
+import {tabEnum} from "./components/tabenum.js";
 
 
 export default function App() {
     const [activeTab, setActiveTab] = useState(0)
+    const [items, setItems] = useState([])
+    const [fetchError, setFetchError] = useState(false)
+    const [refetchStocklist, setRefetchStocklist] = useState(false)
 
-    const tabChange = (event, newTabIndex) => {
-        setActiveTab(newTabIndex)
+    useEffect(() => {
+        fetch("http://localhost:3000/api/stock")
+            .then((res) => res.json())
+            .then((res) => {
+                setItems(res)
+            })
+            .catch(() => {
+                setFetchError(true)
+            })
+    }, [refetchStocklist, activeTab])
+
+    /**
+     * Reset active tab
+     */
+    useEffect(() => {
+        if (window.localStorage["tab"] !== undefined) {
+            tabChange(null, window.localStorage["tab"])
+        }
+    }, []);
+
+    const tabChange = (_event, newTabIndex) => {
+        setActiveTab(Number(newTabIndex))
+        window.localStorage["tab"] = newTabIndex
     }
+
     return (
         <>
             <Box sx={{display: "flex", justifyContent: "center"}}>
@@ -30,10 +49,17 @@ export default function App() {
                 </Box>
             </Box>
             <Box sx={{display: "flex", justifyContent: "center"}}>
-                <TabPanel value={activeTab} index={0} type={tabEnum.BACKDOOR}/>
-                <TabPanel value={activeTab} index={1} type={tabEnum.CUSTOMER}/>
-                <TabPanel value={activeTab} index={2} type={tabEnum.CASHIER}/>
-                <TabPanel value={activeTab} index={3} type={tabEnum.PACKING}/>
+                <TabPanel items={items} setRefetchStocklist={setRefetchStocklist} setFetchError={setFetchError} value={activeTab} index={0} type={tabEnum.BACKDOOR}/>
+                <TabPanel items={items} setRefetchStocklist={setRefetchStocklist} setFetchError={setFetchError} value={activeTab} index={1} type={tabEnum.CUSTOMER}/>
+                <TabPanel items={items} setRefetchStocklist={setRefetchStocklist} setFetchError={setFetchError} value={activeTab} index={2} type={tabEnum.CASHIER}/>
+                <TabPanel items={items} setRefetchStocklist={setRefetchStocklist} setFetchError={setFetchError} value={activeTab} index={3} type={tabEnum.PACKING}/>
+                {
+                    fetchError && (
+                        <Box>
+                            <Typography color={"error"} textAlign={"center"} variant={"subtitle1"}>An error occurred fetching the stock-list. Is the database up?</Typography>
+                        </Box>
+                    )
+                }
             </Box>
         </>
     )
