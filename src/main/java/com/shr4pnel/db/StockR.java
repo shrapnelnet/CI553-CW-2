@@ -7,7 +7,6 @@
 package com.shr4pnel.db;
 
 import com.google.gson.Gson;
-import com.shr4pnel.catalogue.Product;
 import com.shr4pnel.gsonhelpers.GetAllStockHelper;
 import com.shr4pnel.middleware.StockException;
 import com.shr4pnel.middleware.StockReader;
@@ -18,8 +17,6 @@ import org.apache.logging.log4j.Logger;
 import java.sql.*;
 import java.util.ArrayList;
 
-import javax.swing.*;
-
 // There can only be 1 ResultSet opened per statement
 // so no simultaneous use of the statement object
 // hence the synchronized methods
@@ -28,8 +25,8 @@ import javax.swing.*;
 //    no spaces after SQL statement ;
 
 /** Implements read only access to the stock database. */
-public class StockR implements StockReader {
-    private static final Logger StockRLogger = LogManager.getLogger(StockR.class);
+public class StockR {
+    private static final Logger stockRLogger = LogManager.getLogger(StockR.class);
     private Connection conn = null; // Connection to database
     private Statement theStmt = null; // Statement object
     private PreparedStatement preparedStatement;
@@ -46,7 +43,7 @@ public class StockR implements StockReader {
             conn = DriverManager.getConnection(dbDriver.urlOfDatabase());
             theStmt = conn.createStatement();
         } catch (SQLException e) {
-            StockRLogger.error("Error during SQL execution", e);
+            stockRLogger.error("Error during SQL execution", e);
         } catch (Exception e) {
             throw new StockException("Cannot load database driver.");
         }
@@ -70,92 +67,6 @@ public class StockR implements StockReader {
         return conn;
     }
 
-    /**
-     * Checks if the product exits in the stock list
-     *
-     * @param pNum The product number
-     * @return true if exists otherwise false
-     */
-    public synchronized boolean exists(String pNum) throws StockException {
-
-        try {
-            ResultSet rs =
-                    getStatementObject()
-                            .executeQuery(
-                                    "select price from ProductTable "
-                                            + "  where  ProductTable.productNo = '"
-                                            + pNum
-                                            + "'");
-            boolean res = rs.next();
-            StockRLogger.trace("Db StockR: exists({}) -> {}", pNum, res);
-            return res;
-        } catch (SQLException e) {
-            throw new StockException("SQL exists: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Returns details about the product in the stock list. Assumed to exist in database.
-     *
-     * @param pNum The product number
-     * @return Details in an instance of a Product
-     */
-    public synchronized Product getDetails(String pNum) throws StockException {
-        try {
-            Product dt = new Product("0", "", 0.00, 0);
-            ResultSet rs =
-                    getStatementObject()
-                            .executeQuery(
-                                    "select description, price, stockLevel "
-                                            + "  from ProductTable, StockTable "
-                                            + "  where  ProductTable.productNo = '"
-                                            + pNum
-                                            + "' "
-                                            + "  and    StockTable.productNo   = '"
-                                            + pNum
-                                            + "'");
-            if (rs.next()) {
-                dt.setProductNum(pNum);
-                dt.setDescription(rs.getString("description"));
-                dt.setPrice(rs.getDouble("price"));
-                dt.setQuantity(rs.getInt("stockLevel"));
-            }
-            rs.close();
-            return dt;
-        } catch (SQLException e) {
-            throw new StockException("SQL getDetails: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Returns 'image' of the product
-     *
-     * @param pNum The product number Assumed to exist in database.
-     * @return ImageIcon representing the image
-     */
-    public synchronized ImageIcon getImage(String pNum) throws StockException {
-        String filename = "default.jpg";
-        try {
-            ResultSet rs =
-                    getStatementObject()
-                            .executeQuery(
-                                    "select picture from ProductTable "
-                                            + "  where  ProductTable.productNo = '"
-                                            + pNum
-                                            + "'");
-
-            boolean res = rs.next();
-            if (res) filename = rs.getString("picture");
-            rs.close();
-        } catch (SQLException e) {
-            StockRLogger.fatal("Failed to fetch product image", e);
-            throw new StockException("Failed to fetch product image");
-        }
-
-        // DEBUG.trace( "DB StockR: getImage -> %s", filename );
-        return new ImageIcon(filename);
-    }
-
     public synchronized String getAllStock() {
         ResultSet res;
         String json = null;
@@ -175,8 +86,19 @@ public class StockR implements StockReader {
             Gson gson = new Gson();
             json = gson.toJson(jsonArrayComplete);
         } catch (SQLException e) {
-            StockRLogger.error("Failed to fetch results. Is the database up?");
+            stockRLogger.error("Failed to fetch results. Is the database up?");
         }
         return json;
     }
+
+//    public synchronized String getAllOrdersToPack() {
+//        Gson gson = new Gson();
+//        String json = null;
+//        ResultSet rs;
+//        try (Statement stmt = conn.createStatement()) {
+//            rs = stmt.executeQuery("SELECT * FROM BASKETTABLE INNER JOIN ORDERTABLE O ON BASKETTABLE.ORDERID = O.ORDERID");
+//        } catch (SQLException e) {
+//            stockRLogger.error("Failed to fetch all orders to pack.", e);
+//        }
+//    }
 }
