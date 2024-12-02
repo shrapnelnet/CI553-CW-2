@@ -14,4 +14,6 @@ INSERT INTO StockTable VALUES ('0004', 10)
 INSERT INTO StockTable VALUES ('0005', 17)
 INSERT INTO StockTable VALUES ('0006', 15)
 INSERT INTO StockTable VALUES ('0007', 1)
+CREATE TABLE OrderTable (orderid CHAR(36) PRIMARY KEY, dateOrdered DATE)
+CREATE TABLE BasketTable (basketid CHAR(36) PRIMARY KEY, orderid CHAR(36), productNo CHAR(4), quantity int)
 SELECT * FROM StockTable INNER JOIN ProductTable ON StockTable.productNo = ProductTable.productNo
