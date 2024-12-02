@@ -3,8 +3,6 @@ module CI {
     exports com.shr4pnel.clients;
     exports com.shr4pnel.db;
     exports com.shr4pnel.middleware;
-    exports com.shr4pnel.orders;
-    exports com.shr4pnel.remote;
     exports com.shr4pnel.web;
 
     requires org.apache.logging.log4j.core;
@@ -19,6 +17,7 @@ module CI {
     requires org.apache.commons.csv;
     requires com.google.gson;
     requires spring.core;
+    requires com.google.common;
 
     opens com.shr4pnel.catalogue;
     opens com.shr4pnel.db;
