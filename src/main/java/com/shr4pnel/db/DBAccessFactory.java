@@ -51,10 +51,6 @@ public class DBAccessFactory {
             case "DerbyCreate":
                 return new DerbyCreateAccess(); // Derby & create database
 
-            case "Access":
-            case "AccessCreate":
-                return new WindowsAccess(); // Access Windows
-
             case "mySQL":
             case "mySQLCreate":
                 return new LinuxAccess(); // MySQL Linux
