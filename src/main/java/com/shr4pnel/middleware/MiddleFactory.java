@@ -4,6 +4,8 @@
  */
 package com.shr4pnel.middleware;
 
+import com.shr4pnel.db.StockR;
+
 /** Provide access to middle tier components. */
 
 // Pattern: Abstract Factory
@@ -16,7 +18,7 @@ public interface MiddleFactory {
      * @return instance of StockReader
      * @throws StockException if issue
      */
-    StockReader makeStockReader() throws StockException;
+     StockR makeStockReader() throws StockException;
 
     /**
      * Return an object to access the database for read/write access

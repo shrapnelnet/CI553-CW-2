@@ -15,7 +15,7 @@ import com.shr4pnel.db.StockRW;
 
 // Pattern: Abstract Factory
 
-public class LocalMiddleFactory implements MiddleFactory {
+public class LocalMiddleFactory {
     private static StockR aStockR = null;
     private static StockRW aStockRW = null;
 //    private static Order aOrder = null;
@@ -24,19 +24,19 @@ public class LocalMiddleFactory implements MiddleFactory {
      * Return an object to access the database for read only access. All users share this same
      * object.
      */
-    public StockReader makeStockReader() throws StockException {
+    public StockR makeStockReader() throws StockException {
         if (aStockR == null)
             aStockR = new StockR();
-        return (StockReader) aStockR;
+        return aStockR;
     }
 
     /**
      * Return an object to access the database for read/write access. All users share this same
      * object.
      */
-    public StockReadWriter makeStockReadWriter() throws StockException {
+    public StockRW makeStockReadWriter() throws StockException {
         if (aStockRW == null) aStockRW = new StockRW();
-        return (StockReadWriter) aStockRW;
+        return aStockRW;
     }
 
 //    /** Return an object to access the order processing system. All users share this same object. */
