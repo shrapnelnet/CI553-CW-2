@@ -2,6 +2,7 @@ import {tabEnum} from "./tabenum.js";
 import BackdoorClient from "./BackdoorClient.jsx";
 import CustomerClient from "./CustomerClient.jsx";
 import CashierClient from "./CashierClient.jsx";
+import PackingClient from "./PackingClient.jsx";
 
 export default function TabPanel({index, value, type, items, setRefetchStocklist, setFetchError}) {
     return (
@@ -14,6 +15,9 @@ export default function TabPanel({index, value, type, items, setRefetchStocklist
             }
             {
                 type === tabEnum.CASHIER && <CashierClient items={items} />
+            }
+            {
+                type === tabEnum.PACKING && <PackingClient items={items} />
             }
         </section>
     )
