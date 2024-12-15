@@ -90,6 +90,10 @@ export default function PackingClient() {
         setExpandBasket(true)
     }
 
+    const handlePack = () => {
+        
+    }
+
     return (
         <>
             <Box sx={{marginTop: 1, padding: 5}}>
@@ -120,13 +124,10 @@ export default function PackingClient() {
                                             </TableCell>
 
                                         </TableRow>
-                                        <TableRow sx={{ display: (firstBasketOpen || expandBasket && whichBasket === i) ? "":"none" }}>
+                                        <TableRow>
                                             <TableCell>
-                                                <Collapse in={expandBasket && whichBasket === i}>
-                                                    <p>test</p>
-                                                </Collapse>
+                                                <Button>Pack</Button>
                                             </TableCell>
-                                            <TableCell></TableCell>
                                         </TableRow>
                                     </>
 
@@ -134,6 +135,17 @@ export default function PackingClient() {
                             }
                         </TableBody>
                     </Table>
+                    {
+                        handlePack && (
+                            <>
+                                <Collapse orientation={"horizontal"} in={expandBasket && whichBasket === i}>
+                                    {
+
+                                    }
+                                </Collapse>
+                            </>
+                        )
+                    }
                 </TableContainer>
             </Box>
         </>
