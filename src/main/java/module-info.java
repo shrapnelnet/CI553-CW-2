@@ -1,5 +1,4 @@
 module CI {
-    exports com.shr4pnel.catalogue;
     exports com.shr4pnel.clients;
     exports com.shr4pnel.db;
     exports com.shr4pnel.middleware;
@@ -19,7 +18,6 @@ module CI {
     requires spring.core;
     requires com.google.common;
 
-    opens com.shr4pnel.catalogue;
     opens com.shr4pnel.db;
     opens com.shr4pnel.web;
 
