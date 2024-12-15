@@ -1,6 +1,5 @@
 package com.shr4pnel.middleware;
 
-import com.shr4pnel.catalogue.Product;
 
 /**
  * Interface for read/write access to the stock list.

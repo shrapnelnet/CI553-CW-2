@@ -1,6 +1,5 @@
 package com.shr4pnel.middleware;
 
-import com.shr4pnel.catalogue.Product;
 
 import javax.swing.*;
 
@@ -18,7 +17,7 @@ public interface StockReader {
      * @return StockNumber, Description, Price, Quantity
      * @throws StockException if issue
      */
-    Product getDetails(String pNum) throws StockException;
+    void getDetails(String pNum) throws StockException;
 
     /**
      * Returns an image of the product in the stock list
