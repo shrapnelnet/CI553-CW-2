@@ -8,8 +8,8 @@ package com.shr4pnel.db;
 
 import com.google.gson.Gson;
 import com.shr4pnel.gsonhelpers.GetAllStockHelper;
+import com.shr4pnel.gsonhelpers.PackingHelper;
 import com.shr4pnel.middleware.StockException;
-import com.shr4pnel.middleware.StockReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,14 +91,24 @@ public class StockR {
         return json;
     }
 
-//    public synchronized String getAllOrdersToPack() {
-//        Gson gson = new Gson();
-//        String json = null;
-//        ResultSet rs;
-//        try (Statement stmt = conn.createStatement()) {
-//            rs = stmt.executeQuery("SELECT * FROM BASKETTABLE INNER JOIN ORDERTABLE O ON BASKETTABLE.ORDERID = O.ORDERID");
-//        } catch (SQLException e) {
-//            stockRLogger.error("Failed to fetch all orders to pack.", e);
-//        }
-//    }
+    public synchronized String getAllOrdersToPack() {
+        Gson gson = new Gson();
+        String json = null;
+        ResultSet rs;
+        ArrayList<PackingHelper> packingHelperArrayList = new ArrayList<>();
+        try (Statement stmt = conn.createStatement()) {
+                rs = stmt.executeQuery("SELECT O.DATEORDERED, BASKETTABLE.PRODUCTNO, BASKETTABLE.QUANTITY, O.ORDERID FROM BASKETTABLE INNER JOIN ORDERTABLE O ON BASKETTABLE.ORDERID = O.ORDERID INNER JOIN ");
+            while (rs.next()) {
+                Date orderDate = rs.getDate(1);
+                String pNum = rs.getString(2);
+                int quantity = rs.getInt(3);
+                String uuid = rs.getString(4);
+                packingHelperArrayList.add(new PackingHelper(orderDate, pNum, quantity, uuid));
+            }
+        } catch (SQLException e) {
+            stockRLogger.error("Failed to fetch all orders to pack.", e);
+        }
+        Object[] packingHelperArray = packingHelperArrayList.toArray();
+        return gson.toJson(packingHelperArray);
+    }
 }
