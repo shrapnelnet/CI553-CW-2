@@ -6,9 +6,7 @@ package com.shr4pnel.db;
  * @author Mike Smith University of Brighton
  * @version 2.0
  */
-import com.shr4pnel.catalogue.Product;
 import com.shr4pnel.middleware.StockException;
-import com.shr4pnel.middleware.StockReadWriter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
