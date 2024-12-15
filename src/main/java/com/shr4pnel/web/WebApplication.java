@@ -44,7 +44,7 @@ public class WebApplication {
         webApplicationLogger.trace("GET /api/stock");
         StockR sr;
         try {
-            sr = (StockR) middleFactory.makeStockReader();
+            sr = middleFactory.makeStockReader();
         } catch (StockException e) {
             webApplicationLogger.error("Endpoint /api/stock failed to instantiate StockReader", e);
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
@@ -96,7 +96,7 @@ public class WebApplication {
         assert jsonArray != null;
 
         try {
-            srw = (StockRW) middleFactory.makeStockReadWriter();
+            srw = middleFactory.makeStockReadWriter();
             srw.addOrder(orderuuid);
         } catch (StockException e) {
             webApplicationLogger.error("Failed to create entry in ordertable", e);
@@ -104,7 +104,7 @@ public class WebApplication {
 
         for (BuyStockHelper bsh : jsonArray) {
             try {
-                srw = (StockRW) middleFactory.makeStockReadWriter();
+                srw = middleFactory.makeStockReadWriter();
                 srw.addBasket(orderuuid, bsh.pNum, bsh.quantity);
             } catch (StockException e) {
                 webApplicationLogger.error(
@@ -116,14 +116,19 @@ public class WebApplication {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-//    @CrossOrigin(origins = "http://localhost:5173")
-//    @GetMapping("/api/staff/pack")
-//    public ResponseEntity<HttpEntity> getOrdersToPack() {
-//        try {
-//            StockR sr = (StockR) middleFactory.makeStockReader();
-//
-//        } catch (StockException e) {
-//            webApplicationLogger.error("Failed to create stockreader in packing manager", e);
-//        }
-//    }
+    @CrossOrigin(origins = "http://localhost:5173")
+    @GetMapping("/api/staff/pack")
+    public ResponseEntity<?> getOrdersToPack() {
+        String jsonResponse = null;
+        try {
+            StockR sr = middleFactory.makeStockReader();
+            jsonResponse = sr.getAllOrdersToPack();
+        } catch (StockException e) {
+            webApplicationLogger.error("Failed to create stockreader in packing manager", e);
+        }
+        if (jsonResponse == null) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+    }
 }
