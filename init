@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+if ! command -v mvn 2>&1 >/dev/null
+then
+	echo "Maven is not on \$PATH. Please install Maven, then run this script again."
+	exit 1
+fi
+
+if ! command -v npm 2>&1 >/dev/null
+then
+	echo "NPM, and likely Node, is not on \$PATH. Install Node.js, then run this script again."
+fi
+
+if ! command -v java 2>&1 >/dev/null
+then
+	echo "Java is not on \$PATH. Install Java, then run this script again."
+fi
+
+echo "Cleaning directory"
+rm -rf derby/ derby.log com.shr4pnel.log springboot.log
+
+echo "Initializing database"
+mvn clean install exec:exec
