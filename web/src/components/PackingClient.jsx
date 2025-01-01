@@ -1,6 +1,6 @@
 import {
     Box,
-    Button, Collapse,
+    Button,
     Paper,
     Table,
     TableBody,
@@ -9,89 +9,62 @@ import {
     TableHead,
     TableRow,
     Typography
-} from "@mui/material";
-import {useEffect, useState} from "react";
+} from "@mui/material"
+import {useState} from "react"
 
-export default function PackingClient() {
-    const [packingItems, setPackingItems] = useState([])
-    const [refetchPacking, setRefetchPacking] = useState(false)
+export default function PackingClient({packingItems, setRefetchpacking}) {
     const [whichBasket, setWhichBasket] = useState(-1)
     const [expandBasket, setExpandBasket] = useState(false)
-    const [firstBasketOpen, setFirstBasketOpen] = useState(false)
+    const [currentBasket, setCurrentBasket] = useState({})
+    const [hasClosedAtLeastOneBasket, setHasClosedAtLeastOneBasket] = useState(false)
+    const [finalizePacking, setFinalizePacking] = useState(false)
+    const [showSuccess, setShowSuccess] = useState(false)
+    const [showError, setShowError] = useState(false)
 
-    useEffect(() => {
-        fetch("http://localhost:3000/api/staff/pack")
-            .then(res => res.json())
-            .then((res) => {
-                const merged = mergeOrders(res)
-                console.log(merged)
-                setPackingItems(merged)
-            })
-    }, [refetchPacking]);
-
-    const jsonHasChild = (parent, child) => {
-        for (const innerChild of parent) {
-            if (innerChild.UUID === child.UUID) {
-                return true
-            }
-        }
-        return false
-    }
-
-    const jsonChildAtWhatIndex = (parent, child) => {
-        for (let i = 0; i < parent.length; i++) {
-            if (parent[i].UUID === child.UUID) return i
-        }
-        return null
-    }
-
-    const productNumIndex = (parent, pNum) => {
-        for (let i = 0; i < parent.length; i++) {
-            if (parent.items[i].pNum === pNum) return i
-        }
-        return null
-    }
-
-    const mergeOrders = (parent) => {
-        let comparisonArray = []
-        for (const child of parent) {
-            if (jsonHasChild(comparisonArray, child)) {
-                const index = jsonChildAtWhatIndex(comparisonArray, child)
-                const pNumIndex = productNumIndex(comparisonArray[index], child.pNum)
-                if (pNumIndex) {
-                    comparisonArray[index].items[pNumIndex].quantity += child.quantity
-                } else {
-                    comparisonArray[index].items.push({
-                        pNum: child.pNum, quantity: child.quantity
-                    })
-                }
-            } else {
-                comparisonArray.push({
-                    UUID: child.UUID,
-                    date: child.date,
-                    items: [{
-                        pNum: child.pNum, quantity: child.quantity
-                    }]
-                })
-            }
-        }
-        return comparisonArray
-    }
 
     const handleExpandBasket = (event) => {
-        const newWhichBasket = Number(event.target.getAttribute("data-index"))
-        if (whichBasket === newWhichBasket) {
+        const currentBasketIndex = Number(event.target.getAttribute("data-index"));
+        if (currentBasketIndex === whichBasket && !hasClosedAtLeastOneBasket) {
             setExpandBasket(false)
-            setWhichBasket(-1)
+            setHasClosedAtLeastOneBasket(true)
             return
         }
-        setFirstBasketOpen(true)
-        setWhichBasket(newWhichBasket)
+        setHasClosedAtLeastOneBasket(false)
         setExpandBasket(true)
-    }
+        setWhichBasket(currentBasketIndex)
+        const currentItem = packingItems[currentBasketIndex]
+        setCurrentBasket(currentItem)
+    };
 
     const handlePack = () => {
-        
+        setFinalizePacking(true)
+    };
+
+    const cancelPacking = () => {
+        setFinalizePacking(false)
+    }
+
+    const doFinalizePacking = () => {
+        const { UUID } = currentBasket
+        if (UUID === undefined) {
+            return
+        }
+        fetch(`http://localhost:3000/api/staff/finalizePack?orderid=${UUID}`, {method: "DELETE"})
+            .then(() => {
+                setShowSuccess(true)
+            })
+            .catch(() => {
+                setShowError(true)
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    setShowSuccess(false)
+                    setShowError(false)
+                    setExpandBasket(false)
+                    setFinalizePacking(false)
+                    setRefetchpacking(refetchPacking => !refetchPacking)
+                }, 2000)
+            })
     }
 
     return (
@@ -113,41 +86,95 @@ export default function PackingClient() {
                         <TableBody>
                             {
                                 packingItems.map((item, i) => (
-                                    <>
-                                        <TableRow key={i}>
-                                            <TableCell>
-                                                <Button onClick={handleExpandBasket} data-index={i}>{item.UUID}</Button>
-
-                                            </TableCell>
-                                            <TableCell>
-                                                <Typography variant={"subtitle2"}>{item.date}</Typography>
-                                            </TableCell>
-
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>
-                                                <Button>Pack</Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    </>
-
+                                    <TableRow key={i}>
+                                        <TableCell>
+                                            <Button disabled={finalizePacking} onClick={handleExpandBasket} data-index={i}>{item.UUID}</Button>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography align={"right"} variant={"subtitle2"}>{item.date}</Typography>
+                                        </TableCell>
+                                    </TableRow>
                                 ))
+                            }
+                            {
+                                packingItems.length === 0 && (
+                                    <TableRow>
+                                        <TableCell>
+                                            <Typography>No items waiting to pack.</Typography>
+                                        </TableCell>
+                                        <TableCell></TableCell>
+                                    </TableRow>
+                                )
                             }
                         </TableBody>
                     </Table>
-                    {
-                        handlePack && (
-                            <>
-                                <Collapse orientation={"horizontal"} in={expandBasket && whichBasket === i}>
-                                    {
-
-                                    }
-                                </Collapse>
-                            </>
-                        )
-                    }
                 </TableContainer>
             </Box>
+            <Box>
+                {
+                    expandBasket && whichBasket !== -1 && (
+                        <Typography sx={{ marginBottom: "10px" }}>Basket: {packingItems[whichBasket].UUID}</Typography>
+                    )
+                }
+                <TableContainer component={Paper} sx={{marginBottom: "40px"}}>
+                    <Table sx={{minWidth: 500}}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Product Number</TableCell>
+                                <TableCell align={"right"}>Quantity</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                expandBasket && whichBasket !== -1 && currentBasket.items.map((item, i) => (
+                                    <TableRow key={`${item}-${i}`}>
+                                        <TableCell>
+                                            <Typography>{item.pNum}</Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography align={"right"}
+                                                        variant={"subtitle2"}>{item.quantity}</Typography>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            }
+                            {
+                                expandBasket && whichBasket !== -1 && (
+                                    <TableRow>
+                                        <TableCell>
+                                            <Button onClick={handlePack}>Pack</Button>
+                                        </TableCell>
+                                        <TableCell>
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                {
+                    finalizePacking && (
+                        <Box display={"flex"} justifyContent={"center"} flexWrap={"wrap"}>
+                            <Typography>Pack this order?</Typography>
+                            <Box width={"100%"}></Box>
+                            <Box display={"flex"} justifyContent={"center"} marginTop={"10px"}>
+                                <Button variant={"contained"} sx={{ marginRight: "10px" }} onClick={doFinalizePacking}>Yes</Button>
+                                <Button variant={"outlined"} onClick={cancelPacking}>No</Button>
+                            </Box>
+                        </Box>
+                    )
+                }
+                {
+                    showSuccess && (
+                        <Typography color={"success"}>Order packed!</Typography>
+                    )
+                }
+                {
+                    showError && (
+                        <Typography color={"error"}>Order failed to pack. Is the database up?</Typography>
+                    )
+                }
+            </Box>
         </>
-    )
+    );
 }
