@@ -18,6 +18,12 @@ then
 	exit 1
 fi
 
+if ! [ -x ./clean ]
+then
+    echo "./clean is not executable. Please chmod +x ./clean, then re-run this script."
+    exit 1
+fi
+
 ./clean
 echo "Initializing database"
 mvn install exec:exec
