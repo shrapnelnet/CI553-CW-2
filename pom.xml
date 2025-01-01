@@ -130,6 +130,21 @@
 <!--                    </jvmArguments>-->
 <!--                </configuration>-->
             </plugin>
+            <plugin>
+    	        <groupId>org.codehaus.mojo</groupId>
+      		<artifactId>exec-maven-plugin</artifactId>
+      		<version>3.5.0</version>
+          	<configuration>
+		    <mainClass>com.shr4pnel.clients.Setup</mainClass>
+		    <executable>java</executable>
+		    <arguments>
+		        <argument>-p</argument>
+		        <modulepath/>
+		        <argument>-m</argument>
+		        <argument>CI/com.shr4pnel.clients.Setup</argument>
+		    </arguments>
+                </configuration>
+    	    </plugin>
         </plugins>
     </build>
 </project>
