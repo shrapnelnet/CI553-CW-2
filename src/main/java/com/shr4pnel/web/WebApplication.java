@@ -12,6 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +33,12 @@ public class WebApplication {
         SpringApplication.run(WebApplication.class, args);
     }
 
-    //    @GetMapping("/")
-    //    public ResponseEntity<Resource> root() {
-    //        Resource index = new ClassPathResource("/static/index.html");
-    //        return ResponseEntity.ok()
-    //                .body(index);
-    //    }
+    @GetMapping("/")
+    public ResponseEntity<Resource> root() {
+        Resource index = new ClassPathResource("/index.html");
+        return ResponseEntity.ok()
+                .body(index);
+    }
 
     @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/api/stock")
