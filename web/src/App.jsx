@@ -10,6 +10,9 @@ export default function App() {
     const [items, setItems] = useState([])
     const [fetchError, setFetchError] = useState(false)
     const [refetchStocklist, setRefetchStocklist] = useState(false)
+    const [refetchPacking, setRefetchPacking] = useState(false)
+    const [packingItems, setPackingItems] = useState([])
+
 
     useEffect(() => {
         fetch("http://localhost:3000/api/stock")
@@ -20,7 +23,7 @@ export default function App() {
             .catch(() => {
                 setFetchError(true)
             })
-    }, [refetchStocklist, activeTab])
+    }, [refetchStocklist, activeTab, refetchPacking])
 
     /**
      * Reset active tab
@@ -31,8 +34,71 @@ export default function App() {
         }
     }, []);
 
+    useEffect(() => {
+        fetch("http://localhost:3000/api/staff/pack")
+            .then(res => res.json())
+            .then((res) => {
+                const merged = mergeOrders(res);
+                setPackingItems(merged);
+                console.log(merged)
+            });
+    }, [refetchPacking]);
+
+    const jsonHasChild = (parent, child) => {
+        for (const innerChild of parent) {
+            if (innerChild.UUID === child.UUID) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const jsonChildAtWhatIndex = (parent, child) => {
+        for (let i = 0; i < parent.length; i++) {
+            if (parent[i].UUID === child.UUID) return i;
+        }
+        return null;
+    };
+
+    const productNumIndex = (parent, pNum) => {
+        for (let i = 0; i < parent.length; i++) {
+            if (parent.items[i].pNum === pNum) return i;
+        }
+        return null;
+    };
+
+    const mergeOrders = (parent) => {
+        let comparisonArray = [];
+        for (const child of parent) {
+            if (jsonHasChild(comparisonArray, child)) {
+                const index = jsonChildAtWhatIndex(comparisonArray, child);
+                const pNumIndex = productNumIndex(comparisonArray[index], child.pNum);
+                if (pNumIndex !== null) {
+                    comparisonArray[index].items[pNumIndex].quantity += child.quantity;
+                } else {
+                    comparisonArray[index].items.push({
+                        pNum: child.pNum, quantity: child.quantity
+                    });
+                }
+            } else {
+                comparisonArray.push({
+                    UUID: child.UUID,
+                    date: child.date,
+                    items: [{
+                        pNum: child.pNum, quantity: child.quantity
+                    }]
+                });
+            }
+        }
+        return comparisonArray;
+    };
+
     const tabChange = (_event, newTabIndex) => {
-        setActiveTab(Number(newTabIndex))
+        let tabIndex = Number(newTabIndex)
+        setActiveTab(tabIndex)
+        if (tabIndex === tabEnum.PACKING) {
+            setRefetchPacking(value => !value)
+        }
         window.localStorage["tab"] = newTabIndex
     }
 
@@ -49,10 +115,10 @@ export default function App() {
                 </Box>
             </Box>
             <Box sx={{display: "flex", justifyContent: "center"}}>
-                <TabPanel items={items} setRefetchStocklist={setRefetchStocklist} setFetchError={setFetchError} value={activeTab} index={0} type={tabEnum.BACKDOOR}/>
-                <TabPanel items={items} setRefetchStocklist={setRefetchStocklist} setFetchError={setFetchError} value={activeTab} index={1} type={tabEnum.CUSTOMER}/>
-                <TabPanel items={items} setRefetchStocklist={setRefetchStocklist} setFetchError={setFetchError} value={activeTab} index={2} type={tabEnum.CASHIER}/>
-                <TabPanel items={items} setRefetchStocklist={setRefetchStocklist} setFetchError={setFetchError} value={activeTab} index={3} type={tabEnum.PACKING}/>
+                <TabPanel items={items} packingItems={packingItems} refetchPacking={refetchPacking} setRefetchPacking={setRefetchPacking} setRefetchStocklist={setRefetchStocklist} setFetchError={setFetchError} value={activeTab} index={0} type={tabEnum.BACKDOOR}/>
+                <TabPanel items={items} packingItems={packingItems} refetchPacking={refetchPacking} setRefetchPacking={setRefetchPacking} setRefetchStocklist={setRefetchStocklist} setFetchError={setFetchError} value={activeTab} index={1} type={tabEnum.CUSTOMER}/>
+                <TabPanel items={items} packingItems={packingItems} refetchPacking={refetchPacking} setRefetchPacking={setRefetchPacking} setRefetchStocklist={setRefetchStocklist} setFetchError={setFetchError} value={activeTab} index={2} type={tabEnum.CASHIER}/>
+                <TabPanel items={items} packingItems={packingItems} refetchPacking={refetchPacking} setRefetchPacking={setRefetchPacking} setRefetchStocklist={setRefetchStocklist} setFetchError={setFetchError} value={activeTab} index={3} type={tabEnum.PACKING}/>
                 {
                     fetchError && (
                         <Box>
