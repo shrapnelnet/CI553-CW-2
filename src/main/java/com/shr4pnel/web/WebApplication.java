@@ -49,14 +49,16 @@ public class WebApplication {
             sr = middleFactory.makeStockReader();
         } catch (StockException e) {
             webApplicationLogger.error("Endpoint /api/stock failed to instantiate StockReader", e);
-            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+            return ResponseEntity.status(403).build();
         }
         String json = sr.getAllStock();
         if (json == null) {
             webApplicationLogger.error("Endpoint /api/stock failed to retrieve stock levels");
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.internalServerError().build();
         }
-        return new ResponseEntity<>(json, HttpStatus.OK);
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .body(json);
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
@@ -67,19 +69,19 @@ public class WebApplication {
         BuyStockHelper stockToBuy = new Gson().fromJson(json, BuyStockHelper.class);
         StockRW srw;
         if (stockToBuy.quantity > 99 || stockToBuy.quantity < 0)
-            return new ResponseEntity<>("you make me sick!", HttpStatus.FORBIDDEN);
+            return ResponseEntity.status(403).body("you make me sick!");
         boolean success = false;
         try {
-            srw = (StockRW) middleFactory.makeStockReadWriter();
+            srw = middleFactory.makeStockReadWriter();
             srw.addStock(stockToBuy.pNum, stockToBuy.quantity);
             webApplicationLogger.debug("Ordering {} of {}", stockToBuy.quantity, stockToBuy.pNum);
             success = true;
         } catch (StockException e) {
-            webApplicationLogger.error(
-                    "Error occurred while attempting to instantiate Stock Read-Writer", e);
+            webApplicationLogger.error("Error occurred while attempting to instantiate Stock Read-Writer", e);
         }
-        if (success) return new ResponseEntity<>(null, HttpStatus.OK);
-        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (success)
+            return ResponseEntity.ok().build();
+        return ResponseEntity.internalServerError().build();
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
