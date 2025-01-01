@@ -124,27 +124,41 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>3.4.0</version>
-<!--                <configuration>-->
-<!--                    <jvmArguments>-->
-<!--                        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005-->
-<!--                    </jvmArguments>-->
-<!--                </configuration>-->
+                <!--                <configuration>-->
+                <!--                    <jvmArguments>-->
+                <!--                        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005-->
+                <!--                    </jvmArguments>-->
+                <!--                </configuration>-->
             </plugin>
             <plugin>
-    	        <groupId>org.codehaus.mojo</groupId>
-      		<artifactId>exec-maven-plugin</artifactId>
-      		<version>3.5.0</version>
-          	<configuration>
-		    <mainClass>com.shr4pnel.clients.Setup</mainClass>
-		    <executable>java</executable>
-		    <arguments>
-		        <argument>-p</argument>
-		        <modulepath/>
-		        <argument>-m</argument>
-		        <argument>CI/com.shr4pnel.clients.Setup</argument>
-		    </arguments>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <mainClass>com.shr4pnel.clients.Setup</mainClass>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-p</argument>
+                        <modulepath/>
+                        <argument>-m</argument>
+                        <argument>CI/com.shr4pnel.clients.Setup</argument>
+                    </arguments>
                 </configuration>
-    	    </plugin>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.5.0</version>
+                <configuration>
+                    <inceptionYear>2024</inceptionYear>
+                    <licenseName>gpl_v3</licenseName>
+                    <projectName>CI</projectName>
+                    <organizationName>shrapnelnet</organizationName>
+                    <licenseFile>${basedir}/LICENSE</licenseFile>
+                    <thirdPartyFilename>NOTICE</thirdPartyFilename>
+                    <outputDirectory>${basedir}/</outputDirectory>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
