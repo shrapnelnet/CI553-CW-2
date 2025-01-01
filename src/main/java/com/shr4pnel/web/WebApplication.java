@@ -131,8 +131,25 @@ public class WebApplication {
             webApplicationLogger.error("Failed to create stockreader in packing manager", e);
         }
         if (jsonResponse == null) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.internalServerError().build();
         }
-        return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .body(jsonResponse);
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173")
+    @DeleteMapping("/api/staff/finalizePack")
+    public ResponseEntity<?> finishPacking(@RequestParam(name="orderid") String orderID) {
+        try {
+            StockRW srw = middleFactory.makeStockReadWriter();
+            boolean success = srw.packOrder(orderID);
+            if (success)
+                return ResponseEntity.ok().build();
+            return ResponseEntity.internalServerError().build();
+        } catch (StockException e) {
+            webApplicationLogger.error("Failed to instantiate stock read-writer while deleting order.", e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
