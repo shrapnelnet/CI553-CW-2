@@ -8,4 +8,5 @@ module CI {
     requires spring.web;
     requires org.apache.derby.tools;
     requires java.sql;
+    requires org.apache.commons.csv;
 }
