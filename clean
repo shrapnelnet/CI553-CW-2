@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+echo "Cleaning project root"
+rm -rf derby/ derby.log  com.shr4pnel.log  springboot.log
+mvn clean

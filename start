@@ -6,9 +6,9 @@ then
 	exit 1
 fi
 
-if ! command -v npm 2>&1 >/dev/null
+if ! command -v npx 2>&1 >/dev/null
 then
-	echo "NPM, and likely Node, is not on \$PATH. Install Node.js, then run this script again."
+	echo "NPX, and likely Node, is not on \$PATH. Install Node.js, then run this script again."
 fi
 
 if ! command -v java 2>&1 >/dev/null
@@ -16,8 +16,12 @@ then
 	echo "Java is not on \$PATH. Install Java, then run this script again."
 fi
 
-echo "Cleaning directory"
-rm -rf derby/ derby.log com.shr4pnel.log springboot.log
-
+./clean
 echo "Initializing database"
-mvn clean install exec:exec
+mvn install exec:exec
+echo "Initializing web frontend"
+
+npx yarn --cwd web/ build
+
+echo "Startup"
+mvn spring-boot:run
