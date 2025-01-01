@@ -27,4 +27,7 @@ hs_err_pid*
 .mvn
 derby
 target
-src/main/resources
+src/main/resources/static
+src/main/resources/*.jpg
+src/main/resources/*.svg
+src/main/resources/*.html
