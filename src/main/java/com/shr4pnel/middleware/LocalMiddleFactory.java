@@ -6,7 +6,6 @@ package com.shr4pnel.middleware;
 
 import com.shr4pnel.db.StockR;
 import com.shr4pnel.db.StockRW;
-//import com.shr4pnel.orders.Order;
 
 /**
  * Provide access to middle tier components. Now only one instance of each middle tier object is
@@ -18,7 +17,6 @@ import com.shr4pnel.db.StockRW;
 public class LocalMiddleFactory {
     private static StockR aStockR = null;
     private static StockRW aStockRW = null;
-//    private static Order aOrder = null;
 
     /**
      * Return an object to access the database for read only access. All users share this same
@@ -38,10 +36,4 @@ public class LocalMiddleFactory {
         if (aStockRW == null) aStockRW = new StockRW();
         return aStockRW;
     }
-
-//    /** Return an object to access the order processing system. All users share this same object. */
-//    public OrderProcessing makeOrderProcessing() throws OrderException {
-//        if (aOrder == null) aOrder = new Order();
-//        return aOrder;
-//    }
 }
