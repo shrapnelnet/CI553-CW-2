@@ -75,5 +75,24 @@ public class StockRW extends StockR {
             stockRWLogger.error("Failed to add basket item", e);
         }
     }
+
+    public synchronized boolean packOrder(String orderID) {
+        try (
+                PreparedStatement deleteBasket = getConnectionObject().prepareStatement("DELETE FROM BASKETTABLE WHERE orderid=?");
+                PreparedStatement deleteOrder = getConnectionObject().prepareStatement("DELETE FROM ORDERTABLE WHERE orderid=?")
+            ) {
+            // basket has to be deleted first due to foreign key constraints. always !!
+            deleteBasket.setString(1, orderID);
+            deleteOrder.setString(1, orderID);
+            deleteBasket.executeUpdate();
+            stockRWLogger.debug("DELETE FROM BASKETTABLE WHERE orderid={}", orderID);
+            deleteOrder.executeUpdate();
+            stockRWLogger.debug("DELETE FROM ORDERTABLE WHERE orderid={}", orderID);
+            return true;
+        } catch (SQLException e) {
+            stockRWLogger.error("Failed to delete packed orders.", e);
+            return false;
+        }
+    }
 }
 
