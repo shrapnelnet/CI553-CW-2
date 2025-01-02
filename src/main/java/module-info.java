@@ -9,4 +9,5 @@ module CI {
     requires org.apache.derby.tools;
     requires java.sql;
     requires org.apache.commons.csv;
+    requires io.swagger.v3.oas.annotations;
 }
