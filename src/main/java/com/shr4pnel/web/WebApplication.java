@@ -4,7 +4,8 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.shr4pnel.db.StockR;
 import com.shr4pnel.db.StockRW;
-import com.shr4pnel.gsonhelpers.BuyStockHelper;
+import com.shr4pnel.schemas.BuyStockHelper;
+import com.shr4pnel.schemas.GetAllStockHelper;
 import com.shr4pnel.middleware.LocalMiddleFactory;
 import com.shr4pnel.middleware.StockException;
 
@@ -15,7 +16,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -98,14 +98,12 @@ public class WebApplication {
         StockRW srw;
         UUID orderuuid = UUID.randomUUID();
         assert jsonArray != null;
-
         try {
             srw = middleFactory.makeStockReadWriter();
             srw.addOrder(orderuuid);
         } catch (StockException e) {
             webApplicationLogger.error("Failed to create entry in ordertable", e);
         }
-
         for (BuyStockHelper bsh : jsonArray) {
             try {
                 srw = middleFactory.makeStockReadWriter();
