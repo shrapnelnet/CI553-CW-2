@@ -7,8 +7,8 @@
 package com.shr4pnel.db;
 
 import com.google.gson.Gson;
-import com.shr4pnel.gsonhelpers.GetAllStockHelper;
-import com.shr4pnel.gsonhelpers.PackingHelper;
+import com.shr4pnel.schemas.GetAllStockHelper;
+import com.shr4pnel.schemas.PackingHelper;
 import com.shr4pnel.middleware.StockException;
 
 import org.apache.logging.log4j.LogManager;
@@ -97,7 +97,7 @@ public class StockR {
         ResultSet rs;
         ArrayList<PackingHelper> packingHelperArrayList = new ArrayList<>();
         try (Statement stmt = conn.createStatement()) {
-                rs = stmt.executeQuery("SELECT O.DATEORDERED, BASKETTABLE.PRODUCTNO, BASKETTABLE.QUANTITY, O.ORDERID FROM BASKETTABLE INNER JOIN ORDERTABLE O ON BASKETTABLE.ORDERID = O.ORDERID");
+            rs = stmt.executeQuery("SELECT O.DATEORDERED, BASKETTABLE.PRODUCTNO, BASKETTABLE.QUANTITY, O.ORDERID FROM BASKETTABLE INNER JOIN ORDERTABLE O ON BASKETTABLE.ORDERID = O.ORDERID");
             while (rs.next()) {
                 Date orderDate = rs.getDate(1);
                 String pNum = rs.getString(2);
