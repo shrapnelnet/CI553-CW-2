@@ -5,7 +5,7 @@
 - Any modern Java LTS build
 - Node.js (npm, npx)
 - Maven
-- 
+
 ## Usage
 
 ### Bash script
