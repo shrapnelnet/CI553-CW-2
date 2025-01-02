@@ -1,8 +1,8 @@
-package com.shr4pnel.gsonhelpers;
+package com.shr4pnel.schemas;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "Get all stock serialization helper")
+@Schema(name = "Get all stock schema")
 public class GetAllStockHelper {
     @Schema(name = "Item name", description = "Name of item", example = "32GB USB Drive")
     private String name;
