@@ -28,7 +28,7 @@ It is recommended to use the bash script. Otherwise:
 
 ### Module CI:
 
-#### [com.shr4pnel.clients](src/main/java/com/shr4pnel/clients) :
+#### [com.shr4pnel.clients](src/main/java/com/shr4pnel/clients)
 
 Former location of Swing clients. Now, contains all necessary Java setup code in [Setup.java](src/main/java/com/shr4pnel/clients/Setup.java)
 
@@ -36,9 +36,11 @@ Former location of Swing clients. Now, contains all necessary Java setup code in
 
 Most importantly, this package contains the StockReader and StockReadWriter, which are used frequently to bridge between the database and REST API.
 
-#### [com.shr4pnel.gsonhelpers](src/main/java/com/shr4pnel/gsonhelpers)
+#### [com.shr4pnel.schemas](src/main/java/com/shr4pnel/schemas)
 
-Contains GSON helpers, which cast JSON strings into Java objects. Used for POST endpoints in the REST API to make JSON useful
+Contains Java beans, which cast JSON strings into Java objects. Used for POST endpoints in the REST API to make JSON useful.
+
+These are also Swagger/OpenAPI3.x annotated schemas for use in the API spec.
 
 #### [com.shr4pnel.middleware](src/main/java/com/shr4pnel/middleware)
 
