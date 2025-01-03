@@ -144,7 +144,7 @@ public class WebApplication {
         return ResponseEntity.ok().header("Content-Type", "application/json").body(jsonResponse);
     }
 
-    @Operation(summary = "Delete packed orders", description = "Delete orders that are sent to be packed in the packing frontend client.", responses = {@ApiResponse(responseCode = "204", description = "Successful deletion", content = @Content(schema = @Schema(hidden = true)))})
+    @Operation(summary = "Delete packed orders", description = "Delete orders that are sent to be packed in the packing frontend client.", responses = {@ApiResponse(responseCode = "204", description = "Successful deletion", content = @Content(schema = @Schema(hidden = true))),@ApiResponse(responseCode = "403", description = "Item does not exist in database", content = @Content(schema = @Schema(hidden = true))),@ApiResponse(responseCode = "500", description = "Connection to database has failed", content = @Content(schema = @Schema(hidden = true)))})
     @DeleteMapping("/api/staff/finalizePack")
     public ResponseEntity<?> finishPacking(@Parameter(name = "orderid", description = "Order UUID", example = "b3d68113-2938-4763-bee9-c9276c5aa19d") String orderID) {
         try {
