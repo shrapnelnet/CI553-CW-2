@@ -85,7 +85,6 @@ public class StockR {
 
     public synchronized String getAllOrdersToPack() {
         Gson gson = new Gson();
-        String json = null;
         ResultSet rs;
         ArrayList<PackingHelper> packingHelperArrayList = new ArrayList<>();
         try (Statement stmt = conn.createStatement()) {
