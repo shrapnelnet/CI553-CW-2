@@ -108,26 +108,22 @@ public class WebApplication {
 
         // https://google.github.io/gson/UserGuide.html#collections-examples
         // what a doozy!
-        Type buyStockResponse = new TypeToken<Collection<BuyStockHelper>>() {
-        }.getType();
+        Type buyStockResponse = new TypeToken<Collection<BuyStockHelper>>() {}.getType();
         Collection<BuyStockHelper> jsonArray = gson.fromJson(json, buyStockResponse);
         StockRW srw;
         UUID orderuuid = UUID.randomUUID();
-        assert jsonArray != null;
+        if (jsonArray == null) {
+            return ResponseEntity.internalServerError().build();
+        }
         try {
             srw = middleFactory.makeStockReadWriter();
             srw.addOrder(orderuuid);
         } catch (StockException e) {
             webApplicationLogger.error("Failed to create entry in ordertable", e);
+            return ResponseEntity.internalServerError().build();
         }
         for (BuyStockHelper bsh : jsonArray) {
-            try {
-                srw = middleFactory.makeStockReadWriter();
-                srw.addBasket(orderuuid, bsh.pNum, bsh.quantity);
-            } catch (StockException e) {
-                webApplicationLogger.error("Failed to instantiate stock read-writer while executing customer purchase.", e);
-                return ResponseEntity.internalServerError().build();
-            }
+            srw.addBasket(orderuuid, bsh.pNum, bsh.quantity);
         }
         return ResponseEntity.noContent().build();
     }
@@ -155,7 +151,7 @@ public class WebApplication {
             StockRW srw = middleFactory.makeStockReadWriter();
             boolean success = srw.packOrder(orderID);
             if (success) return ResponseEntity.noContent().build();
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.status(403).build();
         } catch (StockException e) {
             webApplicationLogger.error("Failed to instantiate stock read-writer while deleting order.", e);
             return ResponseEntity.internalServerError().build();
