@@ -1,8 +1,14 @@
+/**
+ * Creates a valid database in an environment without one.
+ * Without this method, the REST API will fail to load
+ *
+ * @see com.shr4pnel.web.WebApplication
+ */
+
 package com.shr4pnel.clients;
 
 import com.shr4pnel.db.DBAccess;
 import com.shr4pnel.db.DBAccessFactory;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,23 +20,19 @@ import java.sql.*;
 import java.util.ArrayList;
 
 /**
- * Repopulate the database with test data
+ * Populates the database
  *
- * @author Mike Smith University of Brighton
- * @version 3.0 Derby
+ * @author shrapnelnet
  */
 public class Setup {
     private static final Logger setupLogger = LogManager.getLogger(Setup.class);
 
     public static void main(String[] args) {
-
         Connection conn = null;
         DBAccess db = new DBAccess();
-        DBAccessFactory.setAction("Create");
-
         try {
-            db = (new DBAccessFactory()).getNewDBAccess();
-            db.loadDriver();
+            db = (new DBAccessFactory(true)).getNewDBAccess();
+
             conn = DriverManager.getConnection(db.urlOfDatabase());
         } catch (SQLException e) {
             setupLogger.fatal(
@@ -74,6 +76,11 @@ public class Setup {
         }
     }
 
+    /**
+     * Loads the initialization script
+     *
+     * @return A string array containing each line of the initialization script at resources/com/shr4pnel/config/init.sql
+     */
     private static String[] getSQLInitializationScript() {
         String[] SQL = null;
         try (InputStream is = Setup.class.getResourceAsStream("/com/shr4pnel/config/init.sql")) {
@@ -84,8 +91,7 @@ public class Setup {
             while ((line = br.readLine()) != null) {
                 SQLStatements.add(line);
             }
-            // felt pretty cool writing this one ;)
-            // setupLogger.trace("SQL AS FOLLOWS: {}", sb.toString());
+            // setupLogger.trace("SQL PROCESSED AS: {}", sb.toString());
             SQL = SQLStatements.toArray(String[]::new);
         } catch (IOException e) {
             setupLogger.fatal("Can't find /config/init.sql. Is it on the classpath?", e);
