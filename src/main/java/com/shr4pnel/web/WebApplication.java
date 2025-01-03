@@ -39,7 +39,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.UUID;
 
-@OpenAPIDefinition(info = @Info(title = "Catshop REST API", version = "v1.0.0", description = "Entrypoint for Spring-boot. Handles communication between the client and database, as well as hosting the frontend itself.", license = @License(name = "GNU GPLv3", url = "https://www.gnu.org/licenses/gpl-3.0.en.html"), contact = @Contact(name = "Tyler", email = "tyler@shrapnelnet.co.uk")))
+@OpenAPIDefinition(info = @Info(title = "Catshop REST API", version = "v1.0.1", description = "Entrypoint for Spring-boot. Handles communication between the client and database, as well as hosting the frontend itself.", license = @License(name = "GNU GPLv3", url = "https://www.gnu.org/licenses/gpl-3.0.en.html"), contact = @Contact(name = "Tyler", email = "tyler@shrapnelnet.co.uk")))
 @SpringBootApplication
 @RestController
 public class WebApplication {
