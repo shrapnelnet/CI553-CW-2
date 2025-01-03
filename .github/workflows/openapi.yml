@@ -1,0 +1,12 @@
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    generate_swagger:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v4
+        - name: Generate Swagger UI
+          run: mvn verify
