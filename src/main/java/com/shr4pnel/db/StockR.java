@@ -1,30 +1,23 @@
 /**
  * Implements Read access to the stock list The stock list is held in a relational DataBase
  *
- * @author Mike Smith University of Brighton
- * @version 2.0
+ * @author shrapnelnet
  */
 package com.shr4pnel.db;
 
 import com.google.gson.Gson;
+import com.shr4pnel.middleware.StockException;
 import com.shr4pnel.schemas.GetAllStockHelper;
 import com.shr4pnel.schemas.PackingHelper;
-import com.shr4pnel.middleware.StockException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-// There can only be 1 ResultSet opened per statement
-// so no simultaneous use of the statement object
-// hence the synchronized methods
-
-// mySQL
-//    no spaces after SQL statement ;
-
-/** Implements read only access to the stock database. */
+/**
+ * Implements read only access to the stock database.
+ */
 public class StockR {
     private static final Logger stockRLogger = LogManager.getLogger(StockR.class);
     private Connection conn = null; // Connection to database
@@ -39,7 +32,6 @@ public class StockR {
     public StockR() throws StockException {
         try {
             DBAccess dbDriver = (new DBAccessFactory()).getNewDBAccess();
-            dbDriver.loadDriver();
             conn = DriverManager.getConnection(dbDriver.urlOfDatabase());
             theStmt = conn.createStatement();
         } catch (SQLException e) {
