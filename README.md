@@ -6,6 +6,8 @@
 - Node.js (npm, npx)
 - Maven
 
+[![.github/workflows/openapi.yml](https://github.com/shrapnelnet/CI553-CW-2/actions/workflows/openapi.yml/badge.svg)](https://github.com/shrapnelnet/CI553-CW-2/actions/workflows/openapi.yml)
+
 ## Usage
 
 ### Bash script
