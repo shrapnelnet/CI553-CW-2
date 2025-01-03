@@ -15,5 +15,4 @@ jobs:
           java-version: '21'
 
       - name: Generate OpenAPI spec
-        run: | 
-          mvn -q clean verify
+        run: mvn -q clean verify
