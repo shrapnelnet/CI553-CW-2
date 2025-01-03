@@ -1,5 +1,8 @@
 on:
   push:
+    paths:
+      - "src/main/java/com/shr4pnel/web"
+      - "src/main/java/com/shr4pnel/schemas"
     branches:
       - master
 
