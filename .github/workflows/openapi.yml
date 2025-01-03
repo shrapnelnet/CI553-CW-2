@@ -1,14 +1,17 @@
 on:
-    push:
-        branches:
-            - master
+  push:
+    branches:
+      - master
 
 jobs:
-    generate_swagger:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: s4u/setup-maven-action@v1.18.0
-          with:
-              java-distribution: "adopt-hotspot"
-              maven-version: '3.9.6'
-              java-version: '21'
+  generate_swagger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: s4u/setup-maven-action@v1.18.0
+        with:
+          java-distribution: "adopt-hotspot"
+          maven-version: '3.9.6'
+          java-version: '21'
+        run: | 
+          mvn -q install verify
+
