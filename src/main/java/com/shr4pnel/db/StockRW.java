@@ -89,6 +89,9 @@ public class StockRW extends StockR {
             deleteOrder.executeUpdate();
             stockRWLogger.debug("DELETE FROM ORDERTABLE WHERE orderid={}", orderID);
             return true;
+        } catch (IllegalArgumentException e) {
+            stockRWLogger.error("Order does not exist", e);
+            return false;
         } catch (SQLException e) {
             stockRWLogger.error("Failed to delete packed orders.", e);
             return false;
