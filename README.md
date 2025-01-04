@@ -22,7 +22,7 @@ It is recommended to use the bash script. Otherwise:
   - `cd web/` from project root
   - `yarn build`, or `npx yarn build` if you don't have yarn installed
 - Get Java environment ready:
-  - `mvn install exec:exec` downloads all dependencies, then executes `com.shr4pnel.clients.Setup.main()` which initializes the database using `classpath:com/shr4pnel/config/init.sql`
+  - `mvn install exec:exec` downloads all dependencies, then executes `com.shr4pnel.init.Setup.main()` which initializes the database using `classpath:com/shr4pnel/config/init.sql`
 - Run the project:
   - `mvn spring-boot:run` starts the webserver, which serves the bundled React.js files at http://localhost:3000.
 
@@ -30,9 +30,9 @@ It is recommended to use the bash script. Otherwise:
 
 ### Module CI:
 
-#### [com.shr4pnel.clients](src/main/java/com/shr4pnel/clients)
+#### [com.shr4pnel.init](src/main/java/com/shr4pnel/init)
 
-Former location of Swing clients. Now, contains all necessary Java setup code in [Setup.java](src/main/java/com/shr4pnel/clients/Setup.java)
+Former location of Swing clients. Now, contains all necessary Java setup code in [Setup.java](src/main/java/com/shr4pnel/init/Setup.java)
 
 #### [com.shr4pnel.db](src/main/java/com/shr4pnel/db)
 

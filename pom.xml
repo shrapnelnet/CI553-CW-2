@@ -152,13 +152,13 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <mainClass>com.shr4pnel.clients.Setup</mainClass>
+                    <mainClass>com.shr4pnel.init.Setup</mainClass>
                     <executable>java</executable>
                     <arguments>
                         <argument>-p</argument>
                         <modulepath/>
                         <argument>-m</argument>
-                        <argument>CI/com.shr4pnel.clients.Setup</argument>
+                        <argument>CI/com.shr4pnel.init.Setup</argument>
                     </arguments>
                 </configuration>
             </plugin>

@@ -5,7 +5,7 @@
  * @see com.shr4pnel.web.WebApplication
  */
 
-package com.shr4pnel.clients;
+package com.shr4pnel.init;
 
 import com.shr4pnel.db.DBAccess;
 import com.shr4pnel.db.DBAccessFactory;
@@ -32,15 +32,9 @@ public class Setup {
         DBAccess db = new DBAccess();
         try {
             db = (new DBAccessFactory(true)).getNewDBAccess();
-
             conn = DriverManager.getConnection(db.urlOfDatabase());
         } catch (SQLException e) {
-            setupLogger.fatal(
-                    "Problem connecting to {}.\nSQLState: {}\nErrorCode: {}",
-                    db.urlOfDatabase(),
-                    e.getSQLState(),
-                    e.getErrorCode(),
-                    e);
+            setupLogger.fatal("Problem connecting to {}.\nSQLState: {}\nErrorCode: {}", db.urlOfDatabase(), e.getSQLState(), e.getErrorCode(), e);
             System.exit(-1);
         } catch (Exception e) {
             setupLogger.fatal("Failed to connect to Apache Derby server", e);
@@ -61,17 +55,20 @@ public class Setup {
             return;
         }
         String[] queries = getSQLInitializationScript();
+        if (queries == null) {
+            setupLogger.fatal("Cannot process SQL initialization script");
+            System.exit(-1);
+        }
         for (String statement : queries) {
             try (Statement stmt = conn.createStatement()) {
                 setupLogger.trace("Processing {}", statement);
-                // todo write about autoclosables
                 if (statement.contains("CREATE") || statement.contains("INSERT")) {
                     stmt.executeUpdate(statement);
                 } else {
                     stmt.executeQuery(statement);
                 }
             } catch (SQLException e) {
-                setupLogger.error("Error occured while processing statement during setup", e);
+                setupLogger.error("Error occurred while processing statement during setup", e);
             }
         }
     }
@@ -84,7 +81,10 @@ public class Setup {
     private static String[] getSQLInitializationScript() {
         String[] SQL = null;
         try (InputStream is = Setup.class.getResourceAsStream("/com/shr4pnel/config/init.sql")) {
-            assert is != null;
+            if (is == null) {
+                setupLogger.error("Couldn't find init.sql at resources/com/shr4pnel/config/init.sql. Did you remove it?");
+                return null;
+            }
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             ArrayList<String> SQLStatements = new ArrayList<>();
             String line;

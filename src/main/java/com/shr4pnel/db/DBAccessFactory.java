@@ -20,7 +20,7 @@ public class DBAccessFactory {
     /**
      * Access a new instance of Derby, with the option to create a new database.
      * @param create Should a new database be created?
-     * @see com.shr4pnel.clients.Setup
+     * @see com.shr4pnel.init.Setup
      */
     public DBAccessFactory(boolean create) {
         this.create = create;
