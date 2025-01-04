@@ -19,10 +19,10 @@
         <Logger name="com.shr4pnel" level="ALL">
             <AppenderRef ref="com.shr4pnel.log"/>
         </Logger>
-        <Logger name="com.shr4pnel" level="TRACE" additivity="false">
+        <Logger name="com.shr4pnel" level="TRACE">
             <AppenderRef ref="CONSOLE"/>
         </Logger>
-        <Logger name="org.springframework.boot" level="INFO" additivity="false">
+        <Logger name="org.springframework.boot" level="INFO">
             <AppenderRef ref="springboot-lessverbose"/>
         </Logger>
         <Root level="WARN">
