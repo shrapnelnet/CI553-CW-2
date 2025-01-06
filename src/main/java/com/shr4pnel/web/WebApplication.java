@@ -106,7 +106,7 @@ public class WebApplication {
             srw = middleFactory.makeStockReadWriter();
             srw.addOrder(orderuuid);
         } catch (StockException e) {
-            webApplicationLogger.error("Failed to create entry in ordertable", e);
+            webApplicationLogger.error("Failed to create entry in orderTable", e);
             return ResponseEntity.internalServerError().build();
         }
         for (BuyStockHelper bsh : jsonArray) {
