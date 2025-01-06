@@ -29,6 +29,7 @@ echo "Initializing database"
 mvn install exec:exec
 echo "Initializing web frontend"
 
+npx yarn --cwd web/
 npx yarn --cwd web/ build
 
 echo "Startup"

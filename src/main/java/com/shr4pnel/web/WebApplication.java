@@ -6,20 +6,10 @@ import com.shr4pnel.db.StockR;
 import com.shr4pnel.db.StockRW;
 import com.shr4pnel.middleware.LocalMiddleFactory;
 import com.shr4pnel.middleware.StockException;
-import com.shr4pnel.schemas.BuyStockHelper;
-import com.shr4pnel.schemas.GetAllStockHelper;
-import com.shr4pnel.schemas.PackingHelper;
-import io.swagger.v3.oas.annotations.Hidden;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.License;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.shr4pnel.schemas.*;
+import io.swagger.v3.oas.annotations.*;
+import io.swagger.v3.oas.annotations.info.*;
+import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.logging.log4j.LogManager;
@@ -30,16 +20,13 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.UUID;
 
-@OpenAPIDefinition(info = @Info(title = "Catshop REST API", version = "v1.0.1", description = "Entrypoint for Spring-boot. Handles communication between the client and database, as well as hosting the frontend itself.", license = @License(name = "GNU GPLv3", url = "https://www.gnu.org/licenses/gpl-3.0.en.html"), contact = @Contact(name = "Tyler", email = "tyler@shrapnelnet.co.uk")))
+@OpenAPIDefinition(info = @Info(title = "Catshop REST API", version = "v1.0.2", description = "Entrypoint for Spring-boot. Handles communication between the client and database, as well as hosting the frontend itself.", license = @License(name = "GNU GPLv3", url = "https://www.gnu.org/licenses/gpl-3.0.en.html"), contact = @Contact(name = "Tyler", email = "tyler@shrapnelnet.co.uk")))
 @SpringBootApplication
 @RestController
 public class WebApplication {
@@ -146,7 +133,7 @@ public class WebApplication {
 
     @Operation(summary = "Delete packed orders", description = "Delete orders that are sent to be packed in the packing frontend client.", responses = {@ApiResponse(responseCode = "204", description = "Successful deletion", content = @Content(schema = @Schema(hidden = true))),@ApiResponse(responseCode = "403", description = "Item does not exist in database", content = @Content(schema = @Schema(hidden = true))),@ApiResponse(responseCode = "500", description = "Connection to database has failed", content = @Content(schema = @Schema(hidden = true)))})
     @DeleteMapping("/api/staff/finalizePack")
-    public ResponseEntity<?> finishPacking(@Parameter(name = "orderid", description = "Order UUID", example = "b3d68113-2938-4763-bee9-c9276c5aa19d") String orderID) {
+    public ResponseEntity<?> finishPacking(@Parameter(name = "orderid", description = "Order UUID", example = "b3d68113-2938-4763-bee9-c9276c5aa19d") @RequestParam("orderid") String orderID) {
         try {
             StockRW srw = middleFactory.makeStockReadWriter();
             boolean success = srw.packOrder(orderID);

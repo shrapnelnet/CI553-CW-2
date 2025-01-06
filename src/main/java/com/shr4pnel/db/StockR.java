@@ -21,11 +21,9 @@ import java.util.ArrayList;
 public class StockR {
     private static final Logger stockRLogger = LogManager.getLogger(StockR.class);
     private Connection conn = null; // Connection to database
-    private Statement theStmt = null; // Statement object
-    private PreparedStatement preparedStatement;
 
     /**
-     * Connects to database Uses a factory method to help setup the connection
+     * Connects to database Uses a factory method to help set up the connection
      *
      * @throws StockException if problem
      */
@@ -33,21 +31,11 @@ public class StockR {
         try {
             DBAccess dbDriver = (new DBAccessFactory()).getNewDBAccess();
             conn = DriverManager.getConnection(dbDriver.urlOfDatabase());
-            theStmt = conn.createStatement();
         } catch (SQLException e) {
             stockRLogger.error("Error during SQL execution", e);
         } catch (Exception e) {
             throw new StockException("Cannot load database driver.");
         }
-    }
-
-    /**
-     * Returns a statement object that is used to process SQL statements
-     *
-     * @return A statement object used to access the database
-     */
-    protected Statement getStatementObject() {
-        return theStmt;
     }
 
     /**
@@ -85,7 +73,6 @@ public class StockR {
 
     public synchronized String getAllOrdersToPack() {
         Gson gson = new Gson();
-        String json = null;
         ResultSet rs;
         ArrayList<PackingHelper> packingHelperArrayList = new ArrayList<>();
         try (Statement stmt = conn.createStatement()) {

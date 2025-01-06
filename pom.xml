@@ -126,12 +126,10 @@
                 <version>3.4.0</version>
                 <configuration>
                     <jvmArguments>-Dspring.application.admin.enabled=true</jvmArguments>
+<!--                    <jvmArguments>-->
+<!--                        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005-->
+<!--                    </jvmArguments>-->
                 </configuration>
-                <!--                <configuration>-->
-                <!--                    <jvmArguments>-->
-                <!--                        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005-->
-                <!--                    </jvmArguments>-->
-                <!--                </configuration>-->
                 <executions>
                     <execution>
                         <id>pre-integration-test</id>
@@ -152,13 +150,13 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <mainClass>com.shr4pnel.clients.Setup</mainClass>
+                    <mainClass>com.shr4pnel.init.Setup</mainClass>
                     <executable>java</executable>
                     <arguments>
                         <argument>-p</argument>
                         <modulepath/>
                         <argument>-m</argument>
-                        <argument>CI/com.shr4pnel.clients.Setup</argument>
+                        <argument>CI/com.shr4pnel.init.Setup</argument>
                     </arguments>
                 </configuration>
             </plugin>
@@ -190,6 +188,14 @@
                 </executions>
                 <configuration>
                     <apiDocsUrl>http://localhost:3000/docs</apiDocsUrl>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <parameters>true</parameters>
                 </configuration>
             </plugin>
         </plugins>
