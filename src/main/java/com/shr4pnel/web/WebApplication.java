@@ -133,7 +133,7 @@ public class WebApplication {
 
     @Operation(summary = "Delete packed orders", description = "Delete orders that are sent to be packed in the packing frontend client.", responses = {@ApiResponse(responseCode = "204", description = "Successful deletion", content = @Content(schema = @Schema(hidden = true))),@ApiResponse(responseCode = "403", description = "Item does not exist in database", content = @Content(schema = @Schema(hidden = true))),@ApiResponse(responseCode = "500", description = "Connection to database has failed", content = @Content(schema = @Schema(hidden = true)))})
     @DeleteMapping("/api/staff/finalizePack")
-    public ResponseEntity<?> finishPacking(@Parameter(name = "orderid", description = "Order UUID", example = "b3d68113-2938-4763-bee9-c9276c5aa19d") String orderID) {
+    public ResponseEntity<?> finishPacking(@Parameter(name = "orderid", description = "Order UUID", example = "b3d68113-2938-4763-bee9-c9276c5aa19d") @RequestParam("orderid") String orderID) {
         try {
             StockRW srw = middleFactory.makeStockReadWriter();
             boolean success = srw.packOrder(orderID);
