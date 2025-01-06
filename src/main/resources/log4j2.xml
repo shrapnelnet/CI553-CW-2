@@ -3,10 +3,10 @@
                xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-config-2.xsd">
     <Appenders>
         <Console name="CONSOLE">
-            <PatternLayout pattern="[ %highlight{%-5p}] %l [%t]: %m%n"/>
+            <PatternLayout pattern="[ %highlight{%p} ] %l [%t]: %m%n"/>
         </Console>
         <Console name="springboot-lessverbose">
-            <PatternLayout pattern="[ %highlight{%-5p}] [%t]: %m%n"/>
+            <PatternLayout pattern="[ %highlight{%p}] [%t]: %m%n"/>
         </Console>
         <File name="com.shr4pnel.log" fileName="com.shr4pnel.log">
             <CsvLogEventLayout format="RFC4180"/>
