@@ -11,11 +11,6 @@ import java.sql.DriverManager;
 class DerbyAccess extends DBAccess {
     private static final String URLdb = "jdbc:derby:derby";
 
-    /** Load the Apache Derby database driver */
-    public void loadDriver() throws Exception {
-        DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-    }
-
     /**
      * Return the url to access the database
      *
