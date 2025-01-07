@@ -24,3 +24,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: 'javadoc'
           publish_dir: 'target/reports/apidocs'
+          external_repository: 'shrapnelnet/CI553-CW-2-Javadoc'
