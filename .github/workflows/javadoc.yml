@@ -5,7 +5,7 @@ on:
       - ".github/workflows/javadoc.yml"
 
 jobs:
-  generate_swagger:
+  generate_javadoc:
     runs-on: ubuntu-24.04
     steps:
       - name: Set-up Java and Maven
@@ -16,7 +16,7 @@ jobs:
           java-version: '21'
 
       - name: Generate JavaDoc
-        run: mvn -q javadoc:javadoc
+        run: mvn -q verify javadoc:javadoc
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
