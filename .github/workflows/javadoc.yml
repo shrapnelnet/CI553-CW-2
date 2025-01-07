@@ -1,0 +1,26 @@
+on:
+  push:
+    paths:
+      - "**.java"
+      - ".github/workflows/javadoc.yml"
+
+jobs:
+  generate_swagger:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Set-up Java and Maven
+        uses: s4u/setup-maven-action@v1.18.0
+        with:
+          java-distribution: "adopt-hotspot"
+          maven-version: '3.9.6'
+          java-version: '21'
+
+      - name: Generate JavaDoc
+        run: mvn -q javadoc:javadoc
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: 'javadoc'
+          publish_dir: 'target/reports/apidocs'
