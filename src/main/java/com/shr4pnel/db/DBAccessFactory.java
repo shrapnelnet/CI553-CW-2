@@ -27,7 +27,7 @@ public class DBAccessFactory {
     }
 
     /**
-     * Used to create, or get a handle to the current database instance.
+     * Used to create, or get a handle to the current database instance .
      * @return If class constructed with create=true, a database instance that will be created, otherwise a handle to an existing database
      */
     public DBAccess getNewDBAccess() {
