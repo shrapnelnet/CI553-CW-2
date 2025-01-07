@@ -6,7 +6,7 @@
             <PatternLayout pattern="[ %highlight{%p} ] %l [%t]: %m%n"/>
         </Console>
         <Console name="springboot-lessverbose">
-            <PatternLayout pattern="[ %highlight{%p}] [%t]: %m%n"/>
+            <PatternLayout pattern="[ %highlight{%p} ] [%t]: %m%n"/>
         </Console>
         <File name="com.shr4pnel.log" fileName="com.shr4pnel.log">
             <CsvLogEventLayout format="RFC4180"/>
