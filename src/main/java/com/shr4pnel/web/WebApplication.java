@@ -33,7 +33,7 @@ import java.util.UUID;
  * @author <a href="https://github.com/shrapnelnet">shrapnelnet</a>
  * @since v0.1.0
  */
-@OpenAPIDefinition(info = @Info(title = "Catshop REST API", version = "v1.0.2", description = "Entrypoint for Spring-boot. Handles communication between the client and database, as well as hosting the frontend itself.", license = @License(name = "GNU GPLv3", url = "https://www.gnu.org/licenses/gpl-3.0.en.html"), contact = @Contact(name = "Tyler", email = "tyler@shrapnelnet.co.uk")))
+@OpenAPIDefinition(info = @Info(title = "Catshop REST API", version = "v1.0.3", description = "Entrypoint for Spring-boot. Handles communication between the client and database, as well as hosting the frontend itself.", license = @License(name = "GNU GPLv3", url = "https://www.gnu.org/licenses/gpl-3.0.en.html"), contact = @Contact(name = "Tyler", email = "tyler@shrapnelnet.co.uk")))
 @SpringBootApplication
 @RestController
 public class WebApplication {
