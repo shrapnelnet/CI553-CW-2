@@ -4,6 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Date;
 
+/**
+ * A schema, used to serialize JSON by the API. used in the /api/staff/pack endpoint.
+ * @author <a href="https://github.com/shrapnelnet">shrapnelnet</a>
+ * @since v0.1.0
+ */
 @Schema(name = "Get all unpacked items schema")
 public class PackingHelper {
     @Schema(name = "Purchase date", description = "The date the cashier client processed the purchase, without timestamp.", example = "Jan 1 2025")

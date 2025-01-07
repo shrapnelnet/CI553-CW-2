@@ -16,12 +16,13 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.UUID;
 
-// There can only be 1 ResultSet opened per statement
-// so no simultaneous use of the statement object
-// hence the synchronized methods
-//
 
-/** Implements read/write access to the stock database. */
+/**
+ * Implements read/write access to the stock database.
+ * @author <a href="https://github.com/shrapnelnet">shrapnelnet</a>
+ * @since v0.1.0
+ * @see com.shr4pnel.web.WebApplication
+ */
 public class StockRW extends StockR {
     private static final Logger stockRWLogger = LogManager.getLogger(StockRW.class);
 
@@ -50,6 +51,10 @@ public class StockRW extends StockR {
         }
     }
 
+    /**
+     * Adds a new order to the OrderTable.
+     * @param uuid A UUID, which is used as a primary key, as well as a foreign key in BasketTable
+     */
     public synchronized void addOrder(UUID uuid) {
         Date date = new Date(System.currentTimeMillis());
         stockRWLogger.debug("INSERT INTO ORDERTABLE VALUES({},{})", uuid, date);
@@ -62,6 +67,12 @@ public class StockRW extends StockR {
         }
     }
 
+    /**
+     * Add an item to the BasketTable
+     * @param orderID The ID of the order that the item belongs to
+     * @param pNum The Product Number of the item
+     * @param quantity The amount of the item to add
+     */
     public synchronized void addBasket(UUID orderID, String pNum, int quantity) {
         try (PreparedStatement ps = getConnectionObject().prepareStatement("INSERT INTO BASKETTABLE VALUES (?,?,?,?)")) {
             UUID uuid = UUID.randomUUID();
@@ -76,6 +87,11 @@ public class StockRW extends StockR {
         }
     }
 
+    /**
+     * Deletes an order, and all associated basket items from the database to simulate the order being packed.
+     * @param orderID The order ID to be removed
+     * @return true, if successful
+     */
     public synchronized boolean packOrder(String orderID) {
         try (
                 PreparedStatement deleteBasket = getConnectionObject().prepareStatement("DELETE FROM BASKETTABLE WHERE orderid=?");

@@ -1,12 +1,10 @@
 package com.shr4pnel.db;
 
-import java.sql.DriverManager;
-
 /**
- * Apache Derby database access
+ * Access an existing Derby DB
  *
- * @author Mike Smith University of Brighton
- * @version 2.0
+ * @author shrapnelnet
+ * @since v0.1.0
  */
 class DerbyAccess extends DBAccess {
     private static final String URLdb = "jdbc:derby:derby";

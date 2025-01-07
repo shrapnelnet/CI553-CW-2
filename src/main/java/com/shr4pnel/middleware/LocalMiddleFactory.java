@@ -7,13 +7,14 @@ package com.shr4pnel.middleware;
 import com.shr4pnel.db.StockR;
 import com.shr4pnel.db.StockRW;
 
-/**
- * Provide access to middle tier components. Now only one instance of each middle tier object is
- * created
- */
-
 // Pattern: Abstract Factory
 
+/**
+ * A local middlefactory, used to create accesses to the stock readers and writers.
+ * @author <a href="https://github.com/shrapnelnet">shrapnelnet</a>
+ * @see StockR
+ * @see StockRW
+ */
 public class LocalMiddleFactory {
     private static StockR aStockR = null;
     private static StockRW aStockRW = null;

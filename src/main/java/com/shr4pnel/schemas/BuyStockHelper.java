@@ -2,6 +2,11 @@ package com.shr4pnel.schemas;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * A schema, used to serialize JSON. This serializes GET requests which are used by the backdoor client when adding new items to the database.
+ * @since v0.1.0
+ * @author <a href="https://github.com/shrapnelnet">shrapnelnet</a>
+ */
 @Schema(name = "Customer product purchase schema")
 public class BuyStockHelper {
     @Schema(name = "Product number", example = "0002")

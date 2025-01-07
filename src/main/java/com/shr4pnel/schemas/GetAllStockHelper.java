@@ -2,6 +2,11 @@ package com.shr4pnel.schemas;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * A schema, used to serialize and deserialize JSON when querying the StockTable. used in the /api/stock endpoint call.
+ * @author <a href="https://github.com/shrapnelnet">shrapnelnet</a>
+ * @since v0.1.0
+ */
 @Schema(name = "Get all stock schema")
 public class GetAllStockHelper {
     @Schema(name = "Item name", description = "Name of item", example = "32GB USB Drive")

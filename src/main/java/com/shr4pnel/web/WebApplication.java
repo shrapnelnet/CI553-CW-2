@@ -26,6 +26,13 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.UUID;
 
+/**
+ * The entry point for the project. Hosts the web API and clients.
+ * <p></p>
+ * API documentation available here: <a href="https://swagger-ui.shrapnelnet.co.uk">swagger-ui.shrapnelnet.co.uk</a>
+ * @author <a href="https://github.com/shrapnelnet">shrapnelnet</a>
+ * @since v0.1.0
+ */
 @OpenAPIDefinition(info = @Info(title = "Catshop REST API", version = "v1.0.2", description = "Entrypoint for Spring-boot. Handles communication between the client and database, as well as hosting the frontend itself.", license = @License(name = "GNU GPLv3", url = "https://www.gnu.org/licenses/gpl-3.0.en.html"), contact = @Contact(name = "Tyler", email = "tyler@shrapnelnet.co.uk")))
 @SpringBootApplication
 @RestController
@@ -37,6 +44,10 @@ public class WebApplication {
         SpringApplication.run(WebApplication.class, args);
     }
 
+    /**
+     * Hosts the bundled react.js clients.
+     * @return A responseentity containing the HTML of the client.
+     */
     @Hidden
     @GetMapping("/")
     public ResponseEntity<Resource> root() {
@@ -44,6 +55,10 @@ public class WebApplication {
         return ResponseEntity.ok().body(index);
     }
 
+    /**
+     * Get the current amount of stock in the database, and send it to the client. Used to synchronize customer, cashier and backdoor clients
+     * @return A JSON object in a responseentity containing the current contents of the StockTable
+     */
     @Operation(summary = "Get stock level", description = "Get the current amount of stock in the database, and send it to the client. Used to synchronize customer, cashier and backdoor clients.", responses = {@ApiResponse(content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = GetAllStockHelper.class), minItems = 0), examples = {@ExampleObject(name = "Stock", description = "Get stock count", value = "[{\"name\":\"40 inch LED HD TV\",\"price\":269,\"stockLevel\":90,\"pNum\":\"0001\"},{\"name\":\"DAB Radio\",\"price\":29,\"stockLevel\":20,\"pNum\":\"0002\"},{\"name\":\"Toaster\",\"price\":19,\"stockLevel\":33,\"pNum\":\"0003\"},{\"name\":\"Watch\",\"price\":29,\"stockLevel\":10,\"pNum\":\"0004\"},{\"name\":\"Digital Camera\",\"price\":89,\"stockLevel\":17,\"pNum\":\"0005\"},{\"name\":\"MP3 player\",\"price\":7,\"stockLevel\":15,\"pNum\":\"0006\"},{\"name\":\"32Gb USB2 drive\",\"price\":6,\"stockLevel\":1,\"pNum\":\"0007\"}]"),}), description = "JSON object populated with product names, stock levels and product numbers digested by the client to display stock levels", responseCode = "200"), @ApiResponse(responseCode = "500", description = "This endpoint will return a HTTP 500 error if a connection to the database cannot be made for any reason.", content = @Content(schema = @Schema(hidden = true)))})
     @GetMapping("/api/stock")
     public ResponseEntity<?> getStock() {
@@ -64,6 +79,12 @@ public class WebApplication {
         return ResponseEntity.ok().header("Content-Type", "application/json").body(json);
     }
 
+    /**
+     * Adds the specified specified amount of stock to the database
+     * @param httpEntity a HTTP entity (JSON request body) containing a product number and the quantity to add to the database
+     * @return A HTTP status code.
+     * @see BuyStockHelper
+     */
     @Operation(summary = "Buy new stock", description = "Adds specified amount of stock to the database", responses = {@ApiResponse(responseCode = "204", description = "Successful addition of new stock to database", content = @Content(schema = @Schema(hidden = true))), @ApiResponse(responseCode = "403", description = "Attempt to add less than zero or more than 99 items at a time", content = @Content(schema = @Schema(hidden = true))), @ApiResponse(responseCode = "500", description = "Server cannot connect to database", content = @Content(schema = @Schema(hidden = true)))})
     @PostMapping("/api/staff/buy")
     public ResponseEntity<?> buyStock(@RequestBody(description = "JSON object containing product number and quantity of product to buy", content = @Content(examples = @ExampleObject(name = "Request body", description = "Stringified JSON body with product number and quantity wanted", value = "{ \"quantity\": \"5\", \"pNum\": \"0003\" }"), schema = @Schema(implementation = BuyStockHelper.class))) HttpEntity<String> httpEntity) {
@@ -86,6 +107,12 @@ public class WebApplication {
         return ResponseEntity.internalServerError().build();
     }
 
+    /**
+     * Removes stock from the StockTable, and places it into the OrderTable and BasketTable respectively
+     * @param httpEntity JSON Object containing a basket, an array of objects, each of which have a product number and a quantity to purchase
+     * @return A HTTP status code.
+     * @see BuyStockHelper
+     */
     @Operation(summary = "Buy products", description = "Removes stock from the StockTable, and places it into the OrderTable and BasketTable respectively", responses = {@ApiResponse(responseCode = "204", description = "Empty response, signifies successful purchase on clientside", content = @Content(schema = @Schema(hidden = true))), @ApiResponse(responseCode = "500", description = "Server cannot connect to database", content = @Content(schema = @Schema(hidden = true)))})
     @PostMapping("/api/customer/buy")
     public ResponseEntity<?> buyStockCustomer(@RequestBody(description = "JSON Object containing a basket, an array of objects, each of which have a product number and a quantity to purchase.", content = @Content(examples = @ExampleObject(name = "Request body", description = "Stringified JSON body with product number and quantity wanted", value = "[{\"name\":\"DAB Radio\",\"quantity\":4,\"pNum\":\"0002\",\"price\":29},{\"name\":\"Digital Camera\",\"quantity\":2,\"pNum\":\"0005\",\"price\":89}]"), array = @ArraySchema(schema = @Schema(implementation = BuyStockHelper.class)))) HttpEntity<String> httpEntity) {
@@ -115,6 +142,11 @@ public class WebApplication {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Fetch all items in OrderTable, then all items in BasketTable with a matching foreign key to aggregate the baskets correctly
+     * @return A stringified JSON object containing the items which are waiting to be packed.
+     * @see StockR
+     */
     @Operation(summary = "Get all items that are waiting to be packed", description = "Fetch all items in OrderTable, then all items in BasketTable with a matching foreign key to aggregate the baskets correctly", responses = {@ApiResponse(responseCode = "200", description = "Successfully retrieved packing orders", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "Response body", summary = "Array of orders that need to be packed", description = "Array children with identical orderIDs get merged in clientside javascript.", value = "[{\"date\":\"Jan 2, 2025\",\"pNum\":\"0002\",\"quantity\":4,\"UUID\":\"acc53edd-d266-463d-abf1-a032853c56b6\"},{\"date\":\"Jan 2, 2025\",\"pNum\":\"0005\",\"quantity\":2,\"UUID\":\"acc53edd-d266-463d-abf1-a032853c56b6\"}]"), array = @ArraySchema(schema = @Schema(implementation = PackingHelper.class))))})
     @GetMapping("/api/staff/pack")
     public ResponseEntity<?> getOrdersToPack() {
@@ -131,6 +163,11 @@ public class WebApplication {
         return ResponseEntity.ok().header("Content-Type", "application/json").body(jsonResponse);
     }
 
+    /**
+     * Delete orders that are sent to be packed in the packing frontend client
+     * @param orderID The UUID of the order to be deleted
+     * @return a HTTP status code.
+     */
     @Operation(summary = "Delete packed orders", description = "Delete orders that are sent to be packed in the packing frontend client.", responses = {@ApiResponse(responseCode = "204", description = "Successful deletion", content = @Content(schema = @Schema(hidden = true))),@ApiResponse(responseCode = "403", description = "Item does not exist in database", content = @Content(schema = @Schema(hidden = true))),@ApiResponse(responseCode = "500", description = "Connection to database has failed", content = @Content(schema = @Schema(hidden = true)))})
     @DeleteMapping("/api/staff/finalizePack")
     public ResponseEntity<?> finishPacking(@Parameter(name = "orderid", description = "Order UUID", example = "b3d68113-2938-4763-bee9-c9276c5aa19d") @RequestParam("orderid") String orderID) {
