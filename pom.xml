@@ -6,8 +6,21 @@
 
     <groupId>com.shr4pnel</groupId>
     <artifactId>CI</artifactId>
-    <version>0.0.1a</version>
-
+    <version>1.0.3</version>
+    <description></description>
+    <licenses>
+        <license>
+            <name>GPL-3.0-or-later</name>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>shrapnelnet</id>
+            <name>shrapnelnet</name>
+            <email>tyler@shrapnelnet.co.uk</email>
+        </developer>
+    </developers>
+    <inceptionYear>2024</inceptionYear>
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -208,6 +221,10 @@
                 <version>3.11.2</version>
                 <configuration>
                     <show>package-private</show>
+                    <defaultVersion>v1.0.3</defaultVersion>
+                    <additionalJOptions>
+                        <additionalJOption>-Xdoclint:none</additionalJOption>
+                    </additionalJOptions>
                 </configuration>
             </plugin>
         </plugins>
