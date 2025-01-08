@@ -38,7 +38,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'reports/apidocs'
+          path: 'target/reports/apidocs'
 
       - name: Push to CI553-CW-2-Javadoc
         run: git push javadoc master
