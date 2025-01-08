@@ -19,6 +19,7 @@ import java.util.UUID;
 
 /**
  * Implements read/write access to the stock database.
+ *
  * @author <a href="https://github.com/shrapnelnet">shrapnelnet</a>
  * @since v0.1.0
  * @see com.shr4pnel.web.WebApplication
@@ -28,6 +29,11 @@ public class StockRW extends StockR {
 
     /*
      * Connects to database
+     */
+    /**
+     * <p>Constructor for StockRW.</p>
+     *
+     * @throws com.shr4pnel.middleware.StockException if any.
      */
     public StockRW() throws StockException {
         super(); // Connection done in StockR's constructor
@@ -53,6 +59,7 @@ public class StockRW extends StockR {
 
     /**
      * Adds a new order to the OrderTable.
+     *
      * @param uuid A UUID, which is used as a primary key, as well as a foreign key in BasketTable
      */
     public synchronized void addOrder(UUID uuid) {
@@ -69,6 +76,7 @@ public class StockRW extends StockR {
 
     /**
      * Add an item to the BasketTable
+     *
      * @param orderID The ID of the order that the item belongs to
      * @param pNum The Product Number of the item
      * @param quantity The amount of the item to add
@@ -89,6 +97,7 @@ public class StockRW extends StockR {
 
     /**
      * Deletes an order, and all associated basket items from the database to simulate the order being packed.
+     *
      * @param orderID The order ID to be removed
      * @return true, if successful
      */

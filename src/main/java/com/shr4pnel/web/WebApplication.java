@@ -30,6 +30,7 @@ import java.util.UUID;
  * The entry point for the project. Hosts the web API and clients.
  * <p></p>
  * API documentation available here: <a href="https://swagger-ui.shrapnelnet.co.uk">swagger-ui.shrapnelnet.co.uk</a>
+ *
  * @author <a href="https://github.com/shrapnelnet">shrapnelnet</a>
  * @since v0.1.0
  */
@@ -40,12 +41,18 @@ public class WebApplication {
     private static final Logger webApplicationLogger = LogManager.getLogger(WebApplication.class);
     private final LocalMiddleFactory middleFactory = new LocalMiddleFactory();
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects
+     */
     public static void main(String[] args) {
         SpringApplication.run(WebApplication.class, args);
     }
 
     /**
      * Hosts the bundled react.js clients.
+     *
      * @return A responseentity containing the HTML of the client.
      */
     @Hidden
@@ -57,6 +64,7 @@ public class WebApplication {
 
     /**
      * Get the current amount of stock in the database, and send it to the client. Used to synchronize customer, cashier and backdoor clients
+     *
      * @return A JSON object in a responseentity containing the current contents of the StockTable
      */
     @Operation(summary = "Get stock level", description = "Get the current amount of stock in the database, and send it to the client. Used to synchronize customer, cashier and backdoor clients.", responses = {@ApiResponse(content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = GetAllStockHelper.class), minItems = 0), examples = {@ExampleObject(name = "Stock", description = "Get stock count", value = "[{\"name\":\"40 inch LED HD TV\",\"price\":269,\"stockLevel\":90,\"pNum\":\"0001\"},{\"name\":\"DAB Radio\",\"price\":29,\"stockLevel\":20,\"pNum\":\"0002\"},{\"name\":\"Toaster\",\"price\":19,\"stockLevel\":33,\"pNum\":\"0003\"},{\"name\":\"Watch\",\"price\":29,\"stockLevel\":10,\"pNum\":\"0004\"},{\"name\":\"Digital Camera\",\"price\":89,\"stockLevel\":17,\"pNum\":\"0005\"},{\"name\":\"MP3 player\",\"price\":7,\"stockLevel\":15,\"pNum\":\"0006\"},{\"name\":\"32Gb USB2 drive\",\"price\":6,\"stockLevel\":1,\"pNum\":\"0007\"}]"),}), description = "JSON object populated with product names, stock levels and product numbers digested by the client to display stock levels", responseCode = "200"), @ApiResponse(responseCode = "500", description = "This endpoint will return a HTTP 500 error if a connection to the database cannot be made for any reason.", content = @Content(schema = @Schema(hidden = true)))})
@@ -81,6 +89,7 @@ public class WebApplication {
 
     /**
      * Adds the specified specified amount of stock to the database
+     *
      * @param httpEntity a HTTP entity (JSON request body) containing a product number and the quantity to add to the database
      * @return A HTTP status code.
      * @see BuyStockHelper
@@ -109,6 +118,7 @@ public class WebApplication {
 
     /**
      * Removes stock from the StockTable, and places it into the OrderTable and BasketTable respectively
+     *
      * @param httpEntity JSON Object containing a basket, an array of objects, each of which have a product number and a quantity to purchase
      * @return A HTTP status code.
      * @see BuyStockHelper
@@ -144,6 +154,7 @@ public class WebApplication {
 
     /**
      * Fetch all items in OrderTable, then all items in BasketTable with a matching foreign key to aggregate the baskets correctly
+     *
      * @return A stringified JSON object containing the items which are waiting to be packed.
      * @see StockR
      */
@@ -165,6 +176,7 @@ public class WebApplication {
 
     /**
      * Delete orders that are sent to be packed in the packing frontend client
+     *
      * @param orderID The UUID of the order to be deleted
      * @return a HTTP status code.
      */

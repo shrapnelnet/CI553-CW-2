@@ -27,6 +27,11 @@ import java.util.ArrayList;
 public class Setup {
     private static final Logger setupLogger = LogManager.getLogger(Setup.class);
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects
+     */
     public static void main(String[] args) {
         Connection conn = null;
         DBAccess db = new DBAccess();

@@ -11,6 +11,7 @@ import com.shr4pnel.db.StockRW;
 
 /**
  * A local middlefactory, used to create accesses to the stock readers and writers.
+ *
  * @author <a href="https://github.com/shrapnelnet">shrapnelnet</a>
  * @see StockR
  * @see StockRW
@@ -22,6 +23,9 @@ public class LocalMiddleFactory {
     /**
      * Return an object to access the database for read only access. All users share this same
      * object.
+     *
+     * @return a {@link com.shr4pnel.db.StockR} object
+     * @throws com.shr4pnel.middleware.StockException if any.
      */
     public StockR makeStockReader() throws StockException {
         if (aStockR == null)
@@ -32,6 +36,9 @@ public class LocalMiddleFactory {
     /**
      * Return an object to access the database for read/write access. All users share this same
      * object.
+     *
+     * @return a {@link com.shr4pnel.db.StockRW} object
+     * @throws com.shr4pnel.middleware.StockException if any.
      */
     public StockRW makeStockReadWriter() throws StockException {
         if (aStockRW == null) aStockRW = new StockRW();

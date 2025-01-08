@@ -9,6 +9,11 @@ package com.shr4pnel.middleware;
 public class StockException extends Exception {
     private static final long serialVersionUID = 1;
 
+    /**
+     * <p>Constructor for StockException.</p>
+     *
+     * @param s a {@link java.lang.String} object
+     */
     public StockException(String s) {
         super(s);
     }

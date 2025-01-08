@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 /**
  * Implements read only access to the stock database.
+ *
  * @since v0.1.0
  * @author <a href="https://github.com/shrapnelnet">shrapnelnet</a>
  */
@@ -27,7 +28,7 @@ public class StockR {
     /**
      * Connects to database Uses a factory method to help set up the connection
      *
-     * @throws StockException if problem
+     * @throws com.shr4pnel.middleware.StockException if problem
      */
     public StockR() throws StockException {
         try {
@@ -42,6 +43,7 @@ public class StockR {
 
     /**
      * Used to access the current connection to the database
+     *
      * @return The current connection to the database
      */
     protected Connection getConnectionObject() {
@@ -50,6 +52,7 @@ public class StockR {
 
     /**
      * Used to access the contents of the StockTable
+     *
      * @return Stringified JSON array containing current stock-list
      */
     public synchronized String getAllStock() {
@@ -78,6 +81,7 @@ public class StockR {
 
     /**
      * Get all orders in the OrderTable
+     *
      * @return A stringified JSON array containing the contents of the OrderTable, as well as any items in the BasketTable referenced by an OrderTable foreign key
      */
     public synchronized String getAllOrdersToPack() {
