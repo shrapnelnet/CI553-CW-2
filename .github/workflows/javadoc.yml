@@ -22,7 +22,6 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
-          git remote add origin git@github.com:shrapnelnet/CI553-CW-2-Javadoc
 
       - name: Push to CI553-CW-2-Javadoc
         run: git push origin master
