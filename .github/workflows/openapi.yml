@@ -1,15 +1,33 @@
+name: Deploy OpenAPI spec
+
 on:
   push:
-    paths:
-      - "**.java"
-      - ".github/workflows/openapi.yml"
-    branches:
-      - master
+    branches: ["master"]
+    paths: ["**.java", ".github/workflows/openapi.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  generate_swagger:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
       - name: Set-up Java and Maven
         uses: s4u/setup-maven-action@v1.18.0
         with:
@@ -18,7 +36,7 @@ jobs:
           java-version: '21'
 
       - name: Generate OpenAPI spec
-        run: mvn -q clean verify
+        run: mvn -q verify
 
       - name: Generate Swagger UI
         uses: Legion2/swagger-ui-action@v1.3.0
@@ -27,11 +45,11 @@ jobs:
           spec-file: target/openapi.json
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create CNAME file
-        run: echo "swagger-ui.shrapnelnet.co.uk" > CNAME
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: swagger-ui
+        id: deployment
+        uses: actions/deploy-pages@v4
