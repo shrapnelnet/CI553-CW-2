@@ -18,9 +18,7 @@ jobs:
           java-version: '21'
 
       - name: Generate OpenAPI spec
-        run: |
-          mvn -q clean verify
-          echo "swagger-ui.shrapnelnet.co.uk" > CNAME
+        run: mvn -q clean verify
 
       - name: Generate Swagger UI
         uses: Legion2/swagger-ui-action@v1.3.0
@@ -28,6 +26,9 @@ jobs:
           output: swagger-ui
           spec-file: target/openapi.json
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create CNAME file
+        run: echo "swagger-ui.shrapnelnet.co.uk" > CNAME
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
