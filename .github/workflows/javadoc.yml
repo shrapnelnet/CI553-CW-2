@@ -13,18 +13,17 @@ jobs:
   generate_javadoc:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
-          repository: shrapnelnet/CI553-CW-2-Javadoc
+          repository: shrapnelnet/CI553-CW-2
           ref: 'master'
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+
       - name: setup git config
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
-
-      - name: Push to CI553-CW-2-Javadoc
-        run: git push origin master
+          git remote add javadoc git@github.com:shrapnelnet/CI553-CW-2-Javadoc
 
       - name: Set-up Java and Maven
         uses: s4u/setup-maven-action@v1.18.0
@@ -40,6 +39,9 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: '/reports/apidocs'
+
+      - name: Push to CI553-CW-2-Javadoc
+        run: git push javadoc master
 
       - name: Deploy to GitHub Pages
         id: deployment
