@@ -3,6 +3,7 @@ import {Box, Tab, Tabs, Typography,} from "@mui/material";
 import {useEffect, useState} from "react";
 import TabPanel from "./components/TabPanel.jsx";
 import {tabEnum} from "./components/tabenum.js";
+import {baseURL} from "./baseurl.js";
 
 
 export default function App() {
@@ -15,7 +16,7 @@ export default function App() {
 
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/stock")
+        fetch(`${baseURL}/api/stock`)
             .then((res) => res.json())
             .then((res) => {
                 setItems(res)
@@ -35,7 +36,7 @@ export default function App() {
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/staff/pack")
+        fetch(`${baseURL}/api/staff/pack`)
             .then(res => res.json())
             .then((res) => {
                 const merged = mergeOrders(res);
