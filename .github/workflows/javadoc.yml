@@ -17,6 +17,7 @@ jobs:
         with:
           repository: shrapnelnet/CI553-CW-2
           ref: 'master'
+          ssh-key: ${{ secrets.KEY }}
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
 
       - name: setup git config
