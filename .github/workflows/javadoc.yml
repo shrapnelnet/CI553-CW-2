@@ -1,3 +1,5 @@
+name: "Deploy Javadoc"
+
 on:
   push:
     paths:
@@ -5,11 +7,26 @@ on:
       - ".github/workflows/javadoc.yml"
     branches:
       - "master"
+  workflow_dispatch:
 
 jobs:
   generate_javadoc:
     runs-on: ubuntu-24.04
     steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: shrapnelnet/CI553-CW-2-Javadoc
+          ref: 'master'
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+      - name: setup git config
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          git remote add origin git@github.com:shrapnelnet/CI553-CW-2-Javadoc
+
+      - name: Push to CI553-CW-2-Javadoc
+        run: git push origin master
+
       - name: Set-up Java and Maven
         uses: s4u/setup-maven-action@v1.18.0
         with:
@@ -20,10 +37,11 @@ jobs:
       - name: Generate JavaDoc
         run: mvn -q verify javadoc:javadoc
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          publish_branch: 'javadoc'
-          publish_dir: 'target/reports/apidocs'
-          external_repository: 'shrapnelnet/CI553-CW-2-Javadoc'
-          personal_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          path: '/reports/apidocs'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
