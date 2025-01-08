@@ -1,3 +1,8 @@
+/**
+ * Main module of project
+ * @author <a href="https://github.com/shrapnelnet">shrapnelnet</a>
+ * @since v0.1.0
+ */
 module CI {
     requires com.google.common;
     requires com.google.gson;
