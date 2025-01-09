@@ -4,7 +4,7 @@ import CustomerClient from "./CustomerClient.jsx";
 import CashierClient from "./CashierClient.jsx";
 import PackingClient from "./PackingClient.jsx";
 
-export default function TabPanel({index, value, type, items, setRefetchStocklist, setFetchError, packingItems, setRefetchPacking, refetchPacking}) {
+export default function TabPanel({index, value, type, items, setRefetchStocklist, setFetchError, packingItems, setRefetchPacking}) {
     return (
         <section hidden={index !== value}>
             {
@@ -17,7 +17,7 @@ export default function TabPanel({index, value, type, items, setRefetchStocklist
                 type === tabEnum.CASHIER && <CashierClient items={items} />
             }
             {
-                type === tabEnum.PACKING && <PackingClient items={items} packingItems={packingItems} refetchPacking={refetchPacking} setRefetchpacking={setRefetchPacking} />
+                type === tabEnum.PACKING && <PackingClient packingItems={packingItems} setRefetchpacking={setRefetchPacking} />
             }
         </section>
     )
