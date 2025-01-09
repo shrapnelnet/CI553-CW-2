@@ -24,7 +24,6 @@ export default function BackdoorClient({items, setRefetchStocklist, setFetchErro
     const [showOrderSuccess, setShowOrderSuccess] = useState(false)
     const [shouldDisableOrderButtons, setShouldDisableOrderButtons] = useState(false)
 
-    // state asynchronous shit can suck my penis !!!!
     const handleStockChosen = (event) => {
         setButtonsDisabled(false)
         setCurrentItemIndex(event.target.value)
