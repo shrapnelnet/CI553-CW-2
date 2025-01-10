@@ -14,6 +14,16 @@
 
 Run `./start`, which will automatically check for compile-time dependencies on PATH, download runtime dependencies and start the SpringBoot webserver.
 
+## Docker
+
+- Build the image (execute in project root):
+  - `sudo docker build -t ci553-cw-2 .`
+- Run the image:
+  - `sudo docker run -d -p 127.0.0.1:3000:3000 ci553-cw-2`
+- Access the site at [localhost:3000](http://localhost:3000)
+
+Don't forget to stop the container after you're done using it! 
+
 ### Manual
 
 It is recommended to use the bash script. Otherwise:
