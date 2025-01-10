@@ -48,11 +48,9 @@ export default function CashierClient({items}) {
             return
         }
 
-
         setBasket(prevBasket => {
             const existingItemIndex = prevBasket.findIndex(item => item.name === currentItem.name)
             if (existingItemIndex !== -1) {
-                console.log(currentItem)
                 const updatedBasket = [...prevBasket]
                 if (currentItem.stockLevel < Number(updatedBasket[existingItemIndex].quantity) + Number(quantity)) {
                     setQuantityError(true)
