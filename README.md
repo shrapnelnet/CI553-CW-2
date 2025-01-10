@@ -84,10 +84,9 @@ The parent component, which contains a panel with 4 seperate tabs which can be n
 
 This component primarily handles managing  important state variables representing the amount of items in the system, as well as the items which need to be packed, seamlessly refetching data whenever the user switches panels using React's re-rendering.
 
+#### [web/src/components](web/src/components)
 
-### [web/src/components]
-
-TBC.
+The location of the individual clients. 
 
 ## OpenAPI
 - OpenAPI JSON documentation accessible at http://localhost:3000/docs
