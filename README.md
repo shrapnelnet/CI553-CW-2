@@ -14,7 +14,7 @@
 
 Run `./start`, which will automatically check for compile-time dependencies on PATH, download runtime dependencies and start the SpringBoot webserver.
 
-## Docker
+### Docker
 
 - Build the image (execute in project root):
   - `sudo docker build -t ci553-cw-2 .`
@@ -26,11 +26,11 @@ Don't forget to stop the container after you're done using it!
 
 ### Manual
 
-It is recommended to use the bash script. Otherwise:
+It is recommended to use the bash script on linux, and Docker on Windows. Otherwise:
 
 - Download all web dependencies:
   - `cd web/` from project root
-  - `yarn build`, or `npx yarn build` if you don't have yarn installed
+  - `yarn && yarn build`, or `npx yarn && npx yarn build` if you don't have yarn installed
 - Get Java environment ready:
   - `mvn install exec:exec` downloads all dependencies, then executes `com.shr4pnel.init.Setup.main()` which initializes the database using `classpath:com/shr4pnel/config/init.sql`
 - Run the project:
