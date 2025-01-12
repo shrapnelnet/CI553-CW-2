@@ -20,6 +20,7 @@
             <email>tyler@shrapnelnet.co.uk</email>
         </developer>
     </developers>
+    <url>ci533.shrapnelnet.co.uk</url>
     <inceptionYear>2024</inceptionYear>
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
