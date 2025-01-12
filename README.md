@@ -14,6 +14,8 @@
 
 Run `./start`, which will automatically check for compile-time dependencies on PATH, download runtime dependencies and start the SpringBoot webserver.
 
+The web-clients will be hosted at [localhost:3000](http://localhost:3000).
+
 ### Docker
 
 - Build the image (execute in project root):
